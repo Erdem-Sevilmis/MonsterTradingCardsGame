@@ -1,6 +1,6 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
 using Moq;
-using SWE1.MessageServer.BLL;
+using SWE1.MessageServer.BLL.user;
 using SWE1.MessageServer.DAL;
 using SWE1.MessageServer.Models;
 

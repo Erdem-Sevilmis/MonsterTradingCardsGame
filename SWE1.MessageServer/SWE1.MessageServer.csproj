@@ -9,10 +9,16 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Npgsql" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MonsterTradingCardGame\MonsterTradingCardGame.csproj" />
     <ProjectReference Include="..\SWE1.MessageServer.Core\SWE1.MessageServer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="API\RouteCommands\game\" />
   </ItemGroup>
 
 </Project>

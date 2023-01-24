@@ -1,30 +1,24 @@
-﻿using SWE1.MessageServer.API.RouteCommands;
-using SWE1.MessageServer.BLL;
-using SWE1.MessageServer.Core.Server;
-using SWE1.MessageServer.DAL;
+﻿using MonsterTradingCardsGame;
 using System.Net;
 
-namespace MonsterTradingCardsGame
+namespace MyApp // Note: actual namespace depends on the project name.
 {
     internal class Program
     {
         static void Main(string[] args)
         {
+           DataBase db = new DataBase();
+           db.Start();
+            /*
+            * Connect to Database
+            * 
             var userDao = new InMemoryUserDao();
             var userManager = new UserManager(userDao);
 
             var router = new Router(userManager);
             var server = new HttpServer(IPAddress.Any, 10001, router);
             server.Start();
+            */
         }
     }
 }
-
-/*
- * Checklist:
- *  -User class ✔️
- *  -User credentials ✔️
- *  -Card ✔️
- *  -SpellCard ✔️
- *  -MonsterCard ✔️
- */

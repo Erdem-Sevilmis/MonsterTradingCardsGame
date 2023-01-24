@@ -18,14 +18,14 @@ namespace SWE1.MessageServer.DAL
 
         public User? GetUserByCredentials(string username, string password)
         {
-            return _users.SingleOrDefault(u => u.Username == username && u.Password == password);
+            return _users.SingleOrDefault(u => u.Credentials.Username == username && u.Credentials.Password == password);
         }
 
         public bool InsertUser(User user)
         {
             var inserted = false;
 
-            if (GetUserByUsername(user.Username) == null)
+            if (GetUserByUsername(user.Credentials.Username) == null)
             {
                 _users.Add(user);
                 inserted = true;
@@ -36,7 +36,7 @@ namespace SWE1.MessageServer.DAL
 
         private User? GetUserByUsername(string username)
         {
-            return _users.SingleOrDefault(u => u.Username == username);
+            return _users.SingleOrDefault(u => u.Credentials.Username == username);
         }
     }
 }

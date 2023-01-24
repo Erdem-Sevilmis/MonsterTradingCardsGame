@@ -2,15 +2,20 @@
 using SWE1.MessageServer.BLL.user;
 using SWE1.MessageServer.Core.Response;
 using SWE1.MessageServer.Core.Routing;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.Users
 {
-    internal class RegisterCommand : IRouteCommand
+    internal class UpdateCommand : IRouteCommand
     {
         private readonly Credentials _credentials;
         private readonly IUserManager _userManager;
 
-        public RegisterCommand(IUserManager userManager, Credentials credentials)
+        public UpdateCommand(Credentials credentials, IUserManager userManager)
         {
             _credentials = credentials;
             _userManager = userManager;
@@ -18,17 +23,7 @@ namespace SWE1.MessageServer.API.RouteCommands.Users
 
         public Response Execute()
         {
-            var response = new Response();
-            try
-            {
-                _userManager.RegisterUser(_credentials);
-                response.StatusCode = StatusCode.Created;
-            }
-            catch(DuplicateUserException)
-            {
-                response.StatusCode = StatusCode.Conflict;
-            }
-            return response;
+            throw new NotImplementedException();
         }
     }
 }

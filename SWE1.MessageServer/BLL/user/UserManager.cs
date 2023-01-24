@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE1.MessageServer.BLL
+namespace SWE1.MessageServer.BLL.user
 {
     public class UserManager : IUserManager
     {
@@ -34,6 +34,11 @@ namespace SWE1.MessageServer.BLL
         public User GetUserByAuthToken(string authToken)
         {
             return _userDao.GetUserByAuthToken(authToken) ?? throw new UserNotFoundException();
+        }
+
+        public void UpdateUser(Credentials olduser, Credentials newUser)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
-using SWE1.MessageServer.BLL;
+using SWE1.MessageServer.BLL.user;
 using SWE1.MessageServer.Core.Response;
 using SWE1.MessageServer.Core.Routing;
 
@@ -39,7 +39,6 @@ namespace SWE1.MessageServer.API.RouteCommands.Users
                 response.StatusCode = StatusCode.Ok;
                 response.Payload = user.Token;
             }
-
             return response;
         }
     }
