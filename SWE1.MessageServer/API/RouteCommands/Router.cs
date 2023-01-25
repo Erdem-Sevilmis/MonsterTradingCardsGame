@@ -41,9 +41,9 @@ namespace SWE1.MessageServer.API.RouteCommands
             var identity = (RequestContext request) => _identityProvider.GetIdentityForRequest(request) ?? throw new RouteNotAuthenticatedException();
             var isMatchUsername = (string path) => _routeParser.IsMatch(path, "/users/{usersname}");
             var isMatchTradingdealId = (string path) => _routeParser.IsMatch(path, "/tradings/{tradingdealid}");
-            
+
             var parseUsername = (string path) => _routeParser.ParseParameters(path, "/users/{usersname}")["usersname"];
-            var parseTradingdealId = (string path) => int.Parse(_routeParser.ParseParameters(path, "/tradings/{tradingdealid}")["tradingdealid"]);
+            var parseTradingdealId = (string path) => _routeParser.ParseParameters(path, "/tradings/{tradingdealid}")["tradingdealid"];
 
             IRouteCommand? command = request switch
             {
@@ -60,18 +60,18 @@ namespace SWE1.MessageServer.API.RouteCommands
                 */
                 //users
                 { Method: HttpMethod.Post, ResourcePath: "/users" } => new RegisterCommand(_userManager, Deserialize<Credentials>(request.Payload)),
-                { Method: HttpMethod.Get, ResourcePath: var path } when isMatchUsername(path) => new GetCommand(Deserialize<Credentials>(request.Payload), _userManager),
-                { Method: HttpMethod.Put, ResourcePath: var path } when isMatchUsername(path)  => new UpdateCommand(Deserialize<Credentials>(request.Payload), _userManager),
+                { Method: HttpMethod.Get, ResourcePath: var path } when isMatchUsername(path) => new GetCommand(identity(request), _userManager, parseUsername(path)),
+                { Method: HttpMethod.Put, ResourcePath: var path } when isMatchUsername(path) => new UpdateCommand(identity(request), _userManager, parseUsername(path)),
                 { Method: HttpMethod.Post, ResourcePath: "/sessions" } => new LoginCommand(_userManager, Deserialize<Credentials>(request.Payload)),
 
                 //package
-                { Method: HttpMethod.Post, ResourcePath: "/packages" } => new NewPackageCommand(Deserialize<Credentials>(request.Payload),_packageManager),
-                { Method: HttpMethod.Post, ResourcePath: "/transactions/packages" } => new BuyPackageCommand(Deserialize<Credentials>(request.Payload), _packageManager),
+                { Method: HttpMethod.Post, ResourcePath: "/packages" } => new NewPackageCommand(identity(request), _packageManager, Deserialize<Guid[]>(request.Payload)),
+                { Method: HttpMethod.Post, ResourcePath: "/transactions/packages" } => new BuyPackageCommand(identity(request), _packageManager),
 
                 //cards
-                { Method: HttpMethod.Get, ResourcePath: "/cards" } => new GetCardsCommand(Deserialize<Credentials>(request.Payload), _cardsManager),
-                { Method: HttpMethod.Get, ResourcePath: "/deck" } => new GetDeckCommand(Deserialize<Credentials>(request.Payload), _cardsManager),
-                { Method: HttpMethod.Put, ResourcePath: "/deck" } => new ConfigureDeckCommand(Deserialize<Credentials>(request.Payload), _cardsManager),
+                { Method: HttpMethod.Get, ResourcePath: "/cards" } => new GetCardsCommand(identity(request), _cardsManager),
+                { Method: HttpMethod.Get, ResourcePath: "/deck" } => new GetDeckCommand(identity(request), _cardsManager),
+                { Method: HttpMethod.Put, ResourcePath: "/deck" } => new ConfigureDeckCommand(identity(request), _cardsManager, Deserialize<Guid[]>(request.Payload)),
 
                 //game
                 /*
@@ -81,11 +81,11 @@ namespace SWE1.MessageServer.API.RouteCommands
                  */
 
                 //tradings
-                { Method: HttpMethod.Get, ResourcePath: "/tradings " } => new GetAllTradingDealsCommand(Deserialize<Credentials>(request.Payload), _tradingManager),
-                { Method: HttpMethod.Post, ResourcePath: var path } when isMatchTradingdealId(path) => new CreateTradingDealCommand(Deserialize<Credentials>(request.Payload), _tradingManager),
-                { Method: HttpMethod.Delete, ResourcePath: var path } when isMatchTradingdealId(path) => new DeleteTradingdealCommand(Deserialize<Credentials>(request.Payload), _tradingManager),
-                { Method: HttpMethod.Post, ResourcePath: "/deck" } => new CarryOutTradeCommand(Deserialize<Credentials>(request.Payload), _tradingManager),
-                
+                { Method: HttpMethod.Get, ResourcePath: "/tradings " } => new GetAllTradingDealsCommand(identity(request), _tradingManager),
+                { Method: HttpMethod.Post, ResourcePath: "/tradings" } => new CreateTradingDealCommand(identity(request), _tradingManager, Deserialize<TradingDeal>(request.Payload)),
+                { Method: HttpMethod.Post, ResourcePath: var path } when isMatchTradingdealId(path) => new CarryOutTradeCommand(identity(request), _tradingManager, Guid.Parse(parseTradingdealId(path)), Deserialize<TradingDeal>(request.Payload)),
+                { Method: HttpMethod.Delete, ResourcePath: var path } when isMatchTradingdealId(path) => new DeleteTradingdealCommand(identity(request), _tradingManager, Deserialize<TradingDeal>(request.Payload)),
+
                 _ => null
             };
 

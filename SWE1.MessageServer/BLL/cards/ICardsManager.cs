@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,8 @@ namespace SWE1.MessageServer.BLL.cards
 {
     internal interface ICardsManager
     {
-        List<Guid> GetUserCards(string username);
-        List<Guid> GetUserDeck(string username);
-        bool ConfigureNewDeck(string username, Guid[] cardIds);
+        List<Guid> GetUserCards(User identity);
+        List<Guid> GetUserDeck(User identity);
+        bool ConfigureNewDeck(User identity, Guid[] cardIds);
     }
 }

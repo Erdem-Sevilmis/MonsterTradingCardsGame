@@ -21,9 +21,10 @@ namespace SWE1.MessageServer.DAL
         }
         public void CreatePackage(Guid[] card_ids)
         {
+            //TODO: Admin Check throw new UserNotAdminException();
             int package_id;
             using (var cmd = new NpgsqlCommand(CreateNewPackage, connection)) { package_id = (int)cmd.ExecuteScalar(); }
-
+            //TODO: throw new AtLeastOneCardInThePackageAlreadyExistsException();
             using (var cmd = new NpgsqlCommand(CreateNewCardPackage, connection)
             {
                 Parameters =

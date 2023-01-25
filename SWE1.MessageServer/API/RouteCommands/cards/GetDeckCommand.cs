@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using SWE1.MessageServer.API.RouteCommands.trading;
 using SWE1.MessageServer.BLL.cards;
 using SWE1.MessageServer.Core.Response;
 using SWE1.MessageServer.Core.Routing;
@@ -10,18 +11,30 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
-    internal class GetDeckCommand : IRouteCommand
+    internal class GetDeckCommand : AuthenticatedRouteCommand
     {
-        private readonly Credentials _credentials;
         private readonly ICardsManager _cardsManager;
-        public GetDeckCommand(Credentials credentials, ICardsManager cardsManager)
+        public GetDeckCommand(User identity, ICardsManager cardsManager): base(identity)
         {
-            _credentials = credentials;
             _cardsManager = cardsManager;
         }
-        public Response Execute()
+        public override Response Execute()
         {
-            throw new NotImplementedException();
+            var response = new Response();
+            try
+            {
+                _cardsManager.GetUserDeck(this.Identity);
+                response.StatusCode = StatusCode.Ok;
+            }
+            catch (NotEnoughCardsinDeckException)
+            {
+                response.StatusCode = StatusCode.BadRequest;
+            }
+            catch (DeckEmptyException)
+            {
+                response.StatusCode = StatusCode.NoContent;
+            }
+            return response;
         }
     }
 }

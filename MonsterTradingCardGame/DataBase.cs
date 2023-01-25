@@ -6,7 +6,7 @@ using System;
 
 namespace MonsterTradingCardsGame
 {
-    public class DataBase
+    public partial class DataBase
     {
         public NpgsqlConnection connection;
         private const string CONNECTIONSTRING = "Host=localhost;Username=admin;Password=admin;Database=dbmtcg";
@@ -15,10 +15,6 @@ namespace MonsterTradingCardsGame
             this.connection = new NpgsqlConnection(CONNECTIONSTRING);
             NpgsqlConnection.GlobalTypeMapper.MapEnum<Card_Type>();
             connection.Open();
-        }
-        public enum Card_Type
-        {
-            WaterGoblin, FireGoblin, RegularGoblin, WaterTroll, FireTroll, RegularTroll, WaterElf, FireElf, RegularElf, WaterSpell, FireSpell, RegularSpell, Knight, Dragon, Ork, Kraken, Wizzard
         }
         public void Start()
         {

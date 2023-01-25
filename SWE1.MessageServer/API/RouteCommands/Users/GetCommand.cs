@@ -5,25 +5,40 @@ using SWE1.MessageServer.Core.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.Users
 {
-    internal class GetCommand : IRouteCommand
+    internal class GetCommand : AuthenticatedRouteCommand
     {
-        private readonly Credentials _credentials;
         private readonly IUserManager _userManager;
+        private readonly string username;
+        private readonly User identity;
 
-        public GetCommand(Credentials credentials, IUserManager userManager)
+        public GetCommand(User identity, IUserManager userManager, string username) : base(identity)
         {
-            _credentials = credentials;
             _userManager = userManager;
+            this.username = username;
+            this.identity = identity;
         }
 
-        public Response Execute()
+        public override Response Execute()
         {
-            throw new NotImplementedException();
+            var response = new Response();
+            User user;
+
+            user = _userManager.GetUserByAuthToken(identity.Token);
+            response.StatusCode = StatusCode.Ok;
+
+            if (user == null)
+            {
+                response.StatusCode = StatusCode.NotFound;
+            }
+
+
+            return response;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using SWE1.MessageServer.API.RouteCommands;
+using SWE1.MessageServer.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,24 +11,14 @@ namespace SWE1.MessageServer.BLL.trading
 {
     internal class TradingManager : ITradingManager
     {
-        public bool AcceptTradingDeal(string username, Guid cardId)
-        {
-            throw new NotImplementedException();
-        }
+        DataBaseTradingDao dataBaseTradingDao = new DataBaseTradingDao();
+        public bool AcceptTradingDeal(Credentials credentials, Guid cardId, TradingDeal tradingDeal) => dataBaseTradingDao.Trade(credentials.Username, cardId, tradingDeal.CardToTrade);
 
-        public bool CreateNewTradingDeal(string username, Guid cardId)
-        {
-            throw new NotImplementedException();
-        }
+        public bool CreateNewTradingDeal(Credentials credentials, TradingDeal tradingdeal) => dataBaseTradingDao.CreateNewTradingDeal(credentials.Username, tradingdeal.CardToTrade);
 
-        public bool DeleteTradingDeal(string username, Guid cardId)
-        {
-            throw new NotImplementedException();
-        }
+        public bool DeleteTradingDeal(Credentials credentials, TradingDeal tradingdeal) => dataBaseTradingDao.DeleteTradingDeal(credentials.Username, tradingdeal.CardToTrade);
 
-        public List<Guid> GetTradingDeals(string username)
-        {
-            throw new NotImplementedException();
-        }
+        public List<Guid> GetTradingDeals(Credentials credentials) => dataBaseTradingDao.GetTradingDeals(credentials.Username);
+
     }
 }

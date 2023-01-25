@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace SWE1.MessageServer.BLL.package
 {
     internal interface IPackageManager
     {
-        void NewPackage(Guid[] package);
-        void AcquireNewPackage(string username);
+        void NewPackage(User identity, Guid[] cardIds);
+        void AcquireNewPackage(User identity);
     }
 }

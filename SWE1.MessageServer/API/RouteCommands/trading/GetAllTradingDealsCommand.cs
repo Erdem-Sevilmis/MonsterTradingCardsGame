@@ -1,5 +1,6 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
 using SWE1.MessageServer.BLL.trading;
+using SWE1.MessageServer.BLL.user;
 using SWE1.MessageServer.Core.Response;
 using SWE1.MessageServer.Core.Routing;
 using System;
@@ -10,21 +11,29 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.trading
 {
-    internal class GetAllTradingDealsCommand : IRouteCommand
+    internal class GetAllTradingDealsCommand : AuthenticatedRouteCommand
     {
-
-        private readonly Credentials _credentials;
+        
         private readonly ITradingManager _tradingManager;
 
-        public GetAllTradingDealsCommand(Credentials credentials, ITradingManager tradingManager)
+        public GetAllTradingDealsCommand(User identity, ITradingManager tradingManager): base(identity)
         {
-            _credentials = credentials;
             _tradingManager = tradingManager;
         }
 
-        public Response Execute()
+        public override Response Execute()
         {
-            throw new NotImplementedException();
+            var response = new Response();
+            try
+            {
+                _tradingManager.GetTradingDeals(this.Identity.Credentials);
+                response.StatusCode = StatusCode.Ok;
+            }
+            catch (NoTradsAvailbleException)
+            {
+                response.StatusCode = StatusCode.NoContent;
+            }
+            return response;
         }
     }
 }

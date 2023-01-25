@@ -10,20 +10,28 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
-    internal class GetCardsCommand : IRouteCommand
+    internal class GetCardsCommand : AuthenticatedRouteCommand
     {
-        private readonly Credentials _credentials;
         private readonly ICardsManager _cardsManager;
 
-        public GetCardsCommand(Credentials credentials, ICardsManager cardsManager)
+        public GetCardsCommand(User identity, ICardsManager cardsManager): base(identity)
         {
-            _credentials = credentials;
             _cardsManager = cardsManager;
         }
 
-        public Response Execute()
+        public override Response Execute()
         {
-            throw new NotImplementedException();
+            var response = new Response();
+            try
+            {
+                _cardsManager.GetUserCards(this.Identity);
+                response.StatusCode = StatusCode.Ok;
+            }
+            catch (NoCardsException)
+            {
+                response.StatusCode = StatusCode.NoContent;
+            }
+            return response;
         }
     }
 }

@@ -1,12 +1,17 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands
 {
-    internal class IdRouteParser : IRouteParser
+    internal class UsernameRouteParser
     {
         public bool IsMatch(string resourcePath, string routePattern)
         {
-            var pattern = "^" + routePattern.Replace("{tradingdealid}", ".*").Replace("/", "\\/") + "(\\?.*)?$";
+            var pattern = "^" + routePattern.Replace("{username}", ".*").Replace("/", "\\/") + "(\\?.*)?$";
             return Regex.IsMatch(resourcePath, pattern);
         }
 
@@ -16,18 +21,18 @@ namespace SWE1.MessageServer.API.RouteCommands
             var parameters = ParseQueryParameters(resourcePath);
 
             // id parameter
-            var tradingdealid = ParseTradingdealidParameter(resourcePath, routePattern);
-            if (tradingdealid != null)
+            var username = ParseUsernameParameter(resourcePath, routePattern);
+            if (username != null)
             {
-                parameters["tradingdealid"] = tradingdealid;
+                parameters["username"] = username;
             }
 
             return parameters;
         }
 
-        private string? ParseTradingdealidParameter(string resourcePath, string routePattern)
+        private string? ParseUsernameParameter(string resourcePath, string routePattern)
         {
-            var pattern = "^" + routePattern.Replace("{tradingdealid}", "(?<id>[^\\?\\/]*)").Replace("/", "\\/") + "$";
+            var pattern = "^" + routePattern.Replace("{id}", "(?<id>[^\\?\\/]*)").Replace("/", "\\/") + "$";
             var result = Regex.Match(resourcePath, pattern);
             return result.Groups["id"].Success ? result.Groups["id"].Value : null;
         }

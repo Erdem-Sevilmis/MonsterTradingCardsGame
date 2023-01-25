@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using SWE1.MessageServer.API.RouteCommands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +10,9 @@ namespace SWE1.MessageServer.BLL.trading
 {
     internal interface ITradingManager
     {
-        bool CreateNewTradingDeal(string username, Guid cardId);
-        List<Guid> GetTradingDeals(string username);
-        bool DeleteTradingDeal(string username, Guid cardId);
-        bool AcceptTradingDeal(string username, Guid cardId);
+        bool CreateNewTradingDeal(Credentials credentials, TradingDeal tradingdeal);
+        List<Guid> GetTradingDeals(Credentials credentials);
+        bool DeleteTradingDeal(Credentials credentials, TradingDeal tradingdeal);
+        bool AcceptTradingDeal(Credentials credentials, Guid cardId, TradingDeal tradingDeal);
     }
 }

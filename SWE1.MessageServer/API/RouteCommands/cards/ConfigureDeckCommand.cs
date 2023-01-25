@@ -1,4 +1,6 @@
-﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.Card;
+using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using SWE1.MessageServer.API.RouteCommands.trading;
 using SWE1.MessageServer.BLL.cards;
 using SWE1.MessageServer.BLL.user;
 using SWE1.MessageServer.Core.Response;
@@ -11,20 +13,34 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
-    internal class ConfigureDeckCommand : IRouteCommand
+    internal class ConfigureDeckCommand : AuthenticatedRouteCommand
     {
-        private readonly Credentials _credentials;
         private readonly ICardsManager _cardsManager;
+        private readonly Guid[] cardIds;
 
-        public ConfigureDeckCommand(Credentials credentials, ICardsManager cardsManager)
+        public ConfigureDeckCommand(User identity, ICardsManager cardsManager, Guid[] cardIds) : base(identity)
         {
-            _credentials = credentials;
             _cardsManager = cardsManager;
+            this.cardIds = cardIds;
         }
 
-        public Response Execute()
+        public override Response Execute()
         {
-            throw new NotImplementedException();
+            var response = new Response();
+            try
+            {
+                _cardsManager.ConfigureNewDeck(this.Identity, cardIds);
+                response.StatusCode = StatusCode.Ok;
+            }
+            catch (NotEnoughCardsinDeckException)
+            {
+                response.StatusCode = StatusCode.BadRequest;
+            }
+            catch (CardNotOwnedOrUnavailableException)
+            {
+                response.StatusCode = StatusCode.Forbidden;
+            }
+            return response;
         }
     }
 }

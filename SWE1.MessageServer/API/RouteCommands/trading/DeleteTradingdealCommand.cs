@@ -2,6 +2,7 @@
 using SWE1.MessageServer.BLL.trading;
 using SWE1.MessageServer.Core.Response;
 using SWE1.MessageServer.Core.Routing;
+using SWE1.MessageServer.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,32 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.trading
 {
-    internal class DeleteTradingdealCommand : IRouteCommand
+    internal class DeleteTradingdealCommand : AuthenticatedRouteCommand
     {
-        private readonly Credentials _credentials;
         private readonly ITradingManager _tradingManager;
-        public DeleteTradingdealCommand(Credentials credentials, ITradingManager tradingManager)
+        private readonly TradingDeal tradingDeal;
+        public DeleteTradingdealCommand(User identity, ITradingManager tradingManager, TradingDeal tradingDeal) : base(identity)
         {
-            _credentials = credentials;
             _tradingManager = tradingManager;
+            this.tradingDeal = tradingDeal;
         }
-        public Response Execute()
+        public override Response Execute()
         {
-            throw new NotImplementedException();
+            var response = new Response();
+            try
+            {
+                _tradingManager.DeleteTradingDeal(this.Identity.Credentials, tradingDeal);
+                response.StatusCode = StatusCode.Ok;
+            }
+            catch (CardNotOwnedOrInDeckException)
+            {
+                response.StatusCode = StatusCode.Forbidden;
+            }
+            catch (CardNotFoundException)
+            {
+                response.StatusCode = StatusCode.NotFound;
+            }
+            return response;
         }
     }
 }

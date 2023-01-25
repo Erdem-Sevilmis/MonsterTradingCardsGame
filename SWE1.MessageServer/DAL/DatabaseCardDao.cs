@@ -1,5 +1,7 @@
 ﻿using MonsterTradingCardsGame;
 using Npgsql;
+using SWE1.MessageServer.API.RouteCommands.cards;
+using SWE1.MessageServer.API.RouteCommands.trading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,7 @@ namespace SWE1.MessageServer.DAL
             DataBase db = new DataBase();
             connection = db.connection;
         }
-        public List<Guid> GetUserCards(string username)=> Enumerable.Concat(GetUserStack(username), GetUserDeck(username)).ToList();
+        public List<Guid> GetUserCards(string username) => Enumerable.Concat(GetUserStack(username), GetUserDeck(username)).ToList();
 
         public List<Guid> GetUserDeck(string username)
         {
@@ -45,6 +47,13 @@ namespace SWE1.MessageServer.DAL
 
         public bool ConfigureNewDeck(string username, Guid[] cardIds)
         {
+            if (cardIds.Length < 4)
+                throw new NotEnoughCardsinDeckException();
+
+            var cards = GetUserCards(username);
+            if (!cardIds.All(elem => cardIds.Contains(elem)))
+                throw new CardNotOwnedOrUnavailableException();
+            
             using var cmd = new NpgsqlCommand("UPDATE user_account SET deck = @deck WHERE username = @username", connection);
             cmd.Parameters.AddWithValue("@username", username);
             cmd.Parameters.AddWithValue("@deck", cardIds);
