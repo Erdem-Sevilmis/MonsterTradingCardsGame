@@ -1,8 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace SWE1.MessageServer.API.RouteCommands
+namespace SWE1.MessageServer.API.RouteCommands.trading
 {
-    internal class IdRouteParser : IRouteParser
+    internal class TradingDealParser : IRouteParser
     {
         public bool IsMatch(string resourcePath, string routePattern)
         {
@@ -16,7 +16,7 @@ namespace SWE1.MessageServer.API.RouteCommands
             var parameters = ParseQueryParameters(resourcePath);
 
             // id parameter
-            var tradingdealid = ParseTradingdealidParameter(resourcePath, routePattern);
+            var tradingdealid = ParsetradingdealidParameter(resourcePath, routePattern);
             if (tradingdealid != null)
             {
                 parameters["tradingdealid"] = tradingdealid;
@@ -25,11 +25,11 @@ namespace SWE1.MessageServer.API.RouteCommands
             return parameters;
         }
 
-        private string? ParseTradingdealidParameter(string resourcePath, string routePattern)
+        private string? ParsetradingdealidParameter(string resourcePath, string routePattern)
         {
-            var pattern = "^" + routePattern.Replace("{tradingdealid}", "(?<id>[^\\?\\/]*)").Replace("/", "\\/") + "$";
+            var pattern = "^" + routePattern.Replace("{tradingdealid}", "(?<tradingdealid>[^\\?\\/]*)").Replace("/", "\\/") + "$";
             var result = Regex.Match(resourcePath, pattern);
-            return result.Groups["id"].Success ? result.Groups["id"].Value : null;
+            return result.Groups["tradingdealid"].Success ? result.Groups["tradingdealid"].Value : null;
         }
 
         private Dictionary<string, string> ParseQueryParameters(string route)

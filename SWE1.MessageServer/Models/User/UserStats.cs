@@ -2,20 +2,18 @@
 {
     public class UserStats
     {
-        /*
-          UserStats:
-      type: object
-      properties:
-        Name:
-          type: string
-          example: Hoax
-          description: The name of the user (from the user data).
-        Elo:
-          type: integer
-        Wins:
-          type: integer
-        Losses:
-          type: integer
-         */
+       
+        public string? Name { get; set; }
+        public int Elo { get; set; }
+        public int Wins { get; set; }
+        public int Losses { get; set; }
+        
+        public UserStats(string? name, int elo, int wins, int losses)
+        {
+            this.Name = name;
+            this.Elo = elo;
+            this.Wins = wins;
+            this.Losses = losses;
+        }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace SWE1.MessageServer.API.RouteCommands
+namespace SWE1.MessageServer.API.RouteCommands.cards
 {
-    internal class TradingDealParser : IRouteParser
+    internal class FormatParser : IRouteParser
     {
         public bool IsMatch(string resourcePath, string routePattern)
         {
-            var pattern = "^" + routePattern.Replace("{tradingdealid}", ".*").Replace("/", "\\/") + "(\\?.*)?$";
+            var pattern = "^" + routePattern.Replace("{format}", ".*").Replace("/", "\\/") + "(\\?.*)?$";
             return Regex.IsMatch(resourcePath, pattern);
         }
 
@@ -16,20 +16,20 @@ namespace SWE1.MessageServer.API.RouteCommands
             var parameters = ParseQueryParameters(resourcePath);
 
             // id parameter
-            var tradingdealid = ParsetradingdealidParameter(resourcePath, routePattern);
-            if (tradingdealid != null)
+            var format = ParseformatParameter(resourcePath, routePattern);
+            if (format != null)
             {
-                parameters["tradingdealid"] = tradingdealid;
+                parameters["format"] = format;
             }
 
             return parameters;
         }
 
-        private string? ParsetradingdealidParameter(string resourcePath, string routePattern)
+        private string? ParseformatParameter(string resourcePath, string routePattern)
         {
-            var pattern = "^" + routePattern.Replace("{tradingdealid}", "(?<tradingdealid>[^\\?\\/]*)").Replace("/", "\\/") + "$";
+            var pattern = "^" + routePattern.Replace("{format}", "(?<format>[^\\?\\/]*)").Replace("/", "\\/") + "$";
             var result = Regex.Match(resourcePath, pattern);
-            return result.Groups["tradingdealid"].Success ? result.Groups["tradingdealid"].Value : null;
+            return result.Groups["format"].Success ? result.Groups["format"].Value : null;
         }
 
         private Dictionary<string, string> ParseQueryParameters(string route)

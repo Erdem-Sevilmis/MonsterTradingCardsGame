@@ -5,9 +5,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace SWE1.MessageServer.API.RouteCommands
+namespace SWE1.MessageServer.API.RouteCommands.Users
 {
-    internal class UsernameRouteParser: IRouteParser
+    internal class UsernameRouteParser : IRouteParser
     {
         public bool IsMatch(string resourcePath, string routePattern)
         {

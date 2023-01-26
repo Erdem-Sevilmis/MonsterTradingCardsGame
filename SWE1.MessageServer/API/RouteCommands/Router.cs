@@ -2,6 +2,7 @@
 using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
 using Newtonsoft.Json;
 using SWE1.MessageServer.API.RouteCommands.cards;
+using SWE1.MessageServer.API.RouteCommands.game;
 using SWE1.MessageServer.API.RouteCommands.packages;
 using SWE1.MessageServer.API.RouteCommands.trading;
 using SWE1.MessageServer.API.RouteCommands.Users;
@@ -25,9 +26,9 @@ namespace SWE1.MessageServer.API.RouteCommands
         private readonly IGameManager _gameManager;
         private readonly ITradingManager _tradingManager;
         private readonly IdentityProvider _identityProvider;
-        private readonly IRouteParser _routeParserID = new IdRouteParser();
         private readonly IRouteParser _routeParserUsername = new UsernameRouteParser();
         private readonly IRouteParser _routeParserTradingdealId = new TradingDealParser();
+        private readonly IRouteParser _routeParserFormat = new FormatParser();
 
         public Router(IUserManager userManager, ICardsManager cardsManager, IPackageManager packageManager, IGameManager gameManager, ITradingManager tradingManager)
         {
@@ -45,13 +46,13 @@ namespace SWE1.MessageServer.API.RouteCommands
             var identity = (RequestContext request) => _identityProvider.GetIdentityForRequest(request) ?? throw new RouteNotAuthenticatedException();
             var isMatchUsername = (string path) => _routeParserUsername.IsMatch(path, "/users/{username}");
             var isMatchTradingdealId = (string path) => _routeParserTradingdealId.IsMatch(path, "/tradings/{tradingdealid}");
-            var isMatchformat = (string path) => _routeParserID.IsMatch(path, "/deck");
+            var isMatchformat = (string path) => _routeParserFormat.IsMatch(path, "/deck");
 
             var parseUsername = (string path) => _routeParserUsername.ParseParameters(path, "/users/{username}")["username"];
             var parseTradingdealId = (string path) => _routeParserTradingdealId.ParseParameters(path, "/tradings/{tradingdealid}")["tradingdealid"];
             Func<string, string> parseFormat = (string path) =>
             {
-                var dict = _routeParserID.ParseParameters(path, "/deck");
+                var dict = _routeParserFormat.ParseParameters(path, "/deck");
                 if (!dict.ContainsKey("format"))
                 {
                     dict["format"] = "json";
@@ -90,9 +91,9 @@ namespace SWE1.MessageServer.API.RouteCommands
                 { Method: HttpMethod.Put, ResourcePath: "/deck" } => new ConfigureDeckCommand(identity(request), _cardsManager, Deserialize<Guid[]>(request.Payload)),
 
                 //game
+                { Method: HttpMethod.Get, ResourcePath: "/stats" } => new GetStatsCommand(identity(request), _gameManager),
+                { Method: HttpMethod.Get, ResourcePath: "/scoreboard" } => new GetScoreBoard(identity(request), _gameManager),
                 /*
-                { Method: HttpMethod.Get, ResourcePath: "/stats" } => new GetCardsCommand(Deserialize<Credentials>(request.Payload), _gameManager),
-                { Method: HttpMethod.Get, ResourcePath: "/scoreboard" } => new GetDeckCommand(Deserialize<Credentials>(request.Payload), _gameManager),
                 { Method: HttpMethod.Post, ResourcePath: "/battle" } => new ConfigureDeckCommand(Deserialize<Credentials>(request.Payload), _gameManager), 
                  */
 

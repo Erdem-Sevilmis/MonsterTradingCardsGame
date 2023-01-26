@@ -16,8 +16,4 @@
     <ProjectReference Include="..\SWE1.MessageServer.Core\SWE1.MessageServer.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="API\RouteCommands\game\" />
-  </ItemGroup>
-
 </Project>
