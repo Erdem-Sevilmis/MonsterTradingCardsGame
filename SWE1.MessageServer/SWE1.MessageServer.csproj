@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonsterTradingCardGame\MonsterTradingCardGame.csproj" />
     <ProjectReference Include="..\SWE1.MessageServer.Core\SWE1.MessageServer.Core.csproj" />
   </ItemGroup>
 

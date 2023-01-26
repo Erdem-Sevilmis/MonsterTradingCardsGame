@@ -19,7 +19,7 @@ namespace SWE1.MessageServer.API.RouteCommands
 
             if (request.Header.TryGetValue("Authorization", out var authToken))
             {
-                const string prefix = "Basic ";
+                const string prefix = "Bearer ";
                 if (authToken.StartsWith(prefix))
                 {
                     try

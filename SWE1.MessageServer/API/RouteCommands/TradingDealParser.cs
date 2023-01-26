@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace SWE1.MessageServer.API.RouteCommands
 {
-    internal class UsernameRouteParser: IRouteParser
+    internal class TradingDealParser : IRouteParser
     {
         public bool IsMatch(string resourcePath, string routePattern)
         {
-            var pattern = "^" + routePattern.Replace("{username}", ".*").Replace("/", "\\/") + "(\\?.*)?$";
+            var pattern = "^" + routePattern.Replace("{tradingdealid}", ".*").Replace("/", "\\/") + "(\\?.*)?$";
             return Regex.IsMatch(resourcePath, pattern);
         }
 
@@ -21,20 +16,20 @@ namespace SWE1.MessageServer.API.RouteCommands
             var parameters = ParseQueryParameters(resourcePath);
 
             // id parameter
-            var username = ParseUsernameParameter(resourcePath, routePattern);
-            if (username != null)
+            var tradingdealid = ParsetradingdealidParameter(resourcePath, routePattern);
+            if (tradingdealid != null)
             {
-                parameters["username"] = username;
+                parameters["tradingdealid"] = tradingdealid;
             }
 
             return parameters;
         }
 
-        private string? ParseUsernameParameter(string resourcePath, string routePattern)
+        private string? ParsetradingdealidParameter(string resourcePath, string routePattern)
         {
-            var pattern = "^" + routePattern.Replace("{username}", "(?<username>[^\\?\\/]*)").Replace("/", "\\/") + "$";
+            var pattern = "^" + routePattern.Replace("{tradingdealid}", "(?<tradingdealid>[^\\?\\/]*)").Replace("/", "\\/") + "$";
             var result = Regex.Match(resourcePath, pattern);
-            return result.Groups["username"].Success ? result.Groups["username"].Value : null;
+            return result.Groups["tradingdealid"].Success ? result.Groups["tradingdealid"].Value : null;
         }
 
         private Dictionary<string, string> ParseQueryParameters(string route)

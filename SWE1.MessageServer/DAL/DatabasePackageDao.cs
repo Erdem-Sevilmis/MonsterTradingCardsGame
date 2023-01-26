@@ -1,16 +1,21 @@
 ﻿using MonsterTradingCardsGame;
+using MonsterTradingCardsGame.SWE1.MessageServer.Models.Card;
+using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
 using Npgsql;
+using SWE1.MessageServer.API.RouteCommands.packages;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MonsterTradingCardsGame.DataBase;
 
 namespace SWE1.MessageServer.DAL
 {
     internal class DatabasePackageDao
     {
-        private const string CreateNewCardPackage = "INSERT INTO card_package (package_id, card_id) VALUES (@package_id, @card_id_1),(@package_id, @card_id_2),(@package_id, @card_id_3),(@package_id, @card_id_4)";
+        private const string CreateNewCardPackage = "INSERT INTO card_package (package_id, card_id) VALUES (@package_id, @card_id_1),(@package_id, @card_id_2),(@package_id, @card_id_3),(@package_id, @card_id_4),(@package_id, @card_id_5)";
         private const string CreateNewPackage = "INSERT INTO package default values returning id";
         private const string AcquireCardPackageForUser = "UPDATE user_account SET username = @new_username, password = @new_password WHERE username = @old_username";
         private NpgsqlConnection connection;
@@ -19,50 +24,56 @@ namespace SWE1.MessageServer.DAL
             DataBase db = new DataBase();
             connection = db.connection;
         }
-        public void CreatePackage(Guid[] card_ids)
+
+        public void CreatePackage(Card[] cards)
         {
-            //TODO: Admin Check throw new UserNotAdminException();
             int package_id;
             using (var cmd = new NpgsqlCommand(CreateNewPackage, connection)) { package_id = (int)cmd.ExecuteScalar(); }
-            //TODO: throw new AtLeastOneCardInThePackageAlreadyExistsException();
             using (var cmd = new NpgsqlCommand(CreateNewCardPackage, connection)
             {
                 Parameters =
                 {
                     new("package_id",package_id),
-                    new("card_id_1",card_ids[0]),
-                    new("card_id_2",card_ids[1]),
-                    new("card_id_3",card_ids[2]),
-                    new("card_id_4",card_ids[3]),
+                    new("card_id_1",cards[0].Id),
+                    new("card_id_2",cards[1].Id),
+                    new("card_id_3",cards[2].Id),
+                    new("card_id_4",cards[3].Id),
+                    new("card_id_5",cards[4].Id),
                 }
             })
             {
                 try
                 {
+                    foreach (var card in cards)
+                    {
+                        InsertIntoTableCard(card);
+                    }
                     cmd.ExecuteNonQuery();
                 }
-                catch (Exception)
+                catch (Npgsql.PostgresException)
                 {
-                    throw;
+                    throw new AtLeastOneCardInThePackageAlreadyExistsException();
                 }
             }
         }
-        public void AddPackageToPlayer(string username)
+        public void AddPackageToPlayer(User user)
         {
-            Random rnd = new Random();
             int package_id;
             List<Guid> cardIds;
-            using (var cmd = new NpgsqlCommand("SELECT MAX(package_id) FROM card_package;", connection))
+            List<int> package_ids = new List<int>();
+            using (var cmd = new NpgsqlCommand("Select distinct package_id from card_package order by package_id asc;", connection))
             {
                 using (var reader = cmd.ExecuteReader())
                 {
-                    int max = 0;
                     if (reader.Read())
-                        max = (int)reader["max"];
-                    package_id = rnd.Next(0, max + 1);
+                        package_ids.Add((int)reader["package_id"]);
                 }
             }
+            if (package_ids.Count < 1)
+                throw new NoPackageAvailableException();
 
+
+            package_id = package_ids[0];
             using (var cmd = new NpgsqlCommand("SELECT * FROM card_package WHERE package_id=@package_id;", connection)
             {
                 Parameters =
@@ -75,11 +86,25 @@ namespace SWE1.MessageServer.DAL
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    //reader["card_id"]
                     cardIds.Add((Guid)reader["card_id"]);
                 }
             }
-            InsertCardToUserStack(username, cardIds.ToArray());
+            InsertCardToUserStack(user.Credentials.Username, cardIds.ToArray());
+            DeletePackageId(package_id);
+            BoughtPackage(user);
+        }
+        private void DeletePackageId(int package_id)
+        {
+            using (var cmd = new NpgsqlCommand("DELETE FROM card_package WHERE package_id=@package_id;", connection)
+            {
+                Parameters =
+                {
+                    new("package_id",package_id)
+                }
+            })
+            {
+                cmd.ExecuteNonQuery();
+            }
         }
         private void InsertCardToUserStack(string username, Guid[] cardIds)
         {
@@ -90,6 +115,28 @@ namespace SWE1.MessageServer.DAL
                 cmd.Parameters.AddWithValue("@username", username);
 
                 // Execute the update statement
+                cmd.ExecuteNonQuery();
+            }
+        }
+        private void InsertIntoTableCard(Card card)
+        {
+            using var cmd = new NpgsqlCommand("INSERT INTO card VALUES (@card_id, @name, @element,@damage)", connection)
+            {
+                Parameters =
+                {
+                    new("card_id", card.Id),
+                    new("name", card.Name),
+                    new("element", card.ElementType),
+                    new("damage", card.Damage)
+                }
+            };
+            cmd.ExecuteNonQuery();
+        }
+        private void BoughtPackage(User user)
+        {
+            using (var cmd = new NpgsqlCommand("UPDATE user_account SET coins = coins - 5 WHERE username = @username", connection))
+            {
+                cmd.Parameters.AddWithValue("@username", user.Credentials.Username);
                 cmd.ExecuteNonQuery();
             }
         }

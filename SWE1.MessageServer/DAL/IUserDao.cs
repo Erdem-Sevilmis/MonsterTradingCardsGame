@@ -12,5 +12,6 @@ namespace SWE1.MessageServer.DAL
         User? GetUserByAuthToken(string authToken);
         User? GetUserByCredentials(string username, string password);
         bool InsertUser(User user);
+        void UpdateUser(User identity,string username ,UserData userdata);
     }
 }

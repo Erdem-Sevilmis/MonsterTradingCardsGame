@@ -5,25 +5,20 @@ namespace MonsterTradingCardsGame.SWE1.MessageServer.Models.User
     public class User
     {
         public int Coins { get; set; }
-        public string Token { get; set; }
+        public string Token => $"{Credentials.Username}-mtcgToken";
         public Credentials Credentials { get; set; }
+        public UserData UserData { get; set; }
 
-        public List<Card.Card> Deck = new();
-        private List<Card.Card> Stack = new();
+        public List<Guid> Deck = new();
 
-        public User(string username, string password)
+        private List<Guid> Stack = new();
+
+
+        public User(string username, string password, int coins)
         {
             Credentials = new Credentials(username, password);
-        }
-        
-        public bool BuyPackage()
-        {
-            return false;
-        }
-        
-        public bool Battle()
-        {
-            return false;
+            Coins = coins;
+
         }
     }
 }

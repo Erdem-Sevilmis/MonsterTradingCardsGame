@@ -1,4 +1,5 @@
-﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.Card;
+using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
 using Newtonsoft.Json;
 using SWE1.MessageServer.API.RouteCommands.cards;
 using SWE1.MessageServer.API.RouteCommands.packages;
@@ -11,6 +12,7 @@ using SWE1.MessageServer.BLL.trading;
 using SWE1.MessageServer.BLL.user;
 using SWE1.MessageServer.Core.Request;
 using SWE1.MessageServer.Core.Routing;
+using SWE1.MessageServer.Models;
 using HttpMethod = SWE1.MessageServer.Core.Request.HttpMethod;
 
 namespace SWE1.MessageServer.API.RouteCommands
@@ -23,7 +25,9 @@ namespace SWE1.MessageServer.API.RouteCommands
         private readonly IGameManager _gameManager;
         private readonly ITradingManager _tradingManager;
         private readonly IdentityProvider _identityProvider;
-        private readonly IRouteParser _routeParser = new IdRouteParser();
+        private readonly IRouteParser _routeParserID = new IdRouteParser();
+        private readonly IRouteParser _routeParserUsername = new UsernameRouteParser();
+        private readonly IRouteParser _routeParserTradingdealId = new TradingDealParser();
 
         public Router(IUserManager userManager, ICardsManager cardsManager, IPackageManager packageManager, IGameManager gameManager, ITradingManager tradingManager)
         {
@@ -39,11 +43,23 @@ namespace SWE1.MessageServer.API.RouteCommands
         public IRouteCommand? Resolve(RequestContext request)
         {
             var identity = (RequestContext request) => _identityProvider.GetIdentityForRequest(request) ?? throw new RouteNotAuthenticatedException();
-            var isMatchUsername = (string path) => _routeParser.IsMatch(path, "/users/{usersname}");
-            var isMatchTradingdealId = (string path) => _routeParser.IsMatch(path, "/tradings/{tradingdealid}");
+            var isMatchUsername = (string path) => _routeParserUsername.IsMatch(path, "/users/{username}");
+            var isMatchTradingdealId = (string path) => _routeParserTradingdealId.IsMatch(path, "/tradings/{tradingdealid}");
+            var isMatchformat = (string path) => _routeParserID.IsMatch(path, "/deck");
 
-            var parseUsername = (string path) => _routeParser.ParseParameters(path, "/users/{usersname}")["usersname"];
-            var parseTradingdealId = (string path) => _routeParser.ParseParameters(path, "/tradings/{tradingdealid}")["tradingdealid"];
+            var parseUsername = (string path) => _routeParserUsername.ParseParameters(path, "/users/{username}")["username"];
+            var parseTradingdealId = (string path) => _routeParserTradingdealId.ParseParameters(path, "/tradings/{tradingdealid}")["tradingdealid"];
+            Func<string, string> parseFormat = (string path) =>
+            {
+                var dict = _routeParserID.ParseParameters(path, "/deck");
+                if (!dict.ContainsKey("format"))
+                {
+                    dict["format"] = "json";
+                }
+                return dict["format"];
+            };
+
+
 
             IRouteCommand? command = request switch
             {
@@ -61,16 +77,16 @@ namespace SWE1.MessageServer.API.RouteCommands
                 //users
                 { Method: HttpMethod.Post, ResourcePath: "/users" } => new RegisterCommand(_userManager, Deserialize<Credentials>(request.Payload)),
                 { Method: HttpMethod.Get, ResourcePath: var path } when isMatchUsername(path) => new GetCommand(identity(request), _userManager, parseUsername(path)),
-                { Method: HttpMethod.Put, ResourcePath: var path } when isMatchUsername(path) => new UpdateCommand(identity(request), _userManager, parseUsername(path)),
+                { Method: HttpMethod.Put, ResourcePath: var path }  when isMatchUsername(path) => new UpdateCommand(identity(request), _userManager, parseUsername(path), Deserialize<UserData>(request.Payload)),
                 { Method: HttpMethod.Post, ResourcePath: "/sessions" } => new LoginCommand(_userManager, Deserialize<Credentials>(request.Payload)),
 
                 //package
-                { Method: HttpMethod.Post, ResourcePath: "/packages" } => new NewPackageCommand(identity(request), _packageManager, Deserialize<Guid[]>(request.Payload)),
+                { Method: HttpMethod.Post, ResourcePath: "/packages" } => new NewPackageCommand(identity(request), _packageManager, Deserialize<Card[]>(request.Payload)),
                 { Method: HttpMethod.Post, ResourcePath: "/transactions/packages" } => new BuyPackageCommand(identity(request), _packageManager),
 
                 //cards
                 { Method: HttpMethod.Get, ResourcePath: "/cards" } => new GetCardsCommand(identity(request), _cardsManager),
-                { Method: HttpMethod.Get, ResourcePath: "/deck" } => new GetDeckCommand(identity(request), _cardsManager),
+                { Method: HttpMethod.Get, ResourcePath: var path } when isMatchformat(path) => new GetDeckCommand(identity(request), _cardsManager, parseFormat(path)),
                 { Method: HttpMethod.Put, ResourcePath: "/deck" } => new ConfigureDeckCommand(identity(request), _cardsManager, Deserialize<Guid[]>(request.Payload)),
 
                 //game

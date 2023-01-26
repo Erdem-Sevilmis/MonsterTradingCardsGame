@@ -2,20 +2,14 @@
 {
     public class UserData
     {
-        /*
-        
-      UserData:
-      type: object
-      properties:
-        Name:
-          type: string
-          example: Hoax
-        Bio:
-          type: string
-          example: me playin...
-        Image:
-          type: string
-          example: :-)
-         */
+        public string Name { get; set; }
+        public string Bio { get; set; }
+        public string Image { get; set; }
+        public UserData(string name, string bio, string image)
+        {
+            Name = name;
+            Bio = bio;
+            Image = image;
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace SWE1.MessageServer.DAL
             if (cards.Contains(cardId))
             {
                 var userDeck = cardDao.GetUserDeck(username);
-                if (userDeck.Contains(cardId))
+                if (userDeck.All((card) => card.Id.Equals(card)))
                     throw new CardNotOwnedOrInDeckException();
             }
             else
@@ -66,8 +66,8 @@ namespace SWE1.MessageServer.DAL
             }
             if (availableTrades.Count <= 0)
                 throw new NoTradsAvailbleException();
-            
-            
+
+
             return availableTrades;
         }
 
@@ -82,9 +82,10 @@ namespace SWE1.MessageServer.DAL
                 if (!reader.HasRows)
                     throw new CardNotFoundException();
             }
-            
+
             DatabaseCardDao cardDao = new DatabaseCardDao();
             var cards = cardDao.GetUserCards(username);
+
             if (!cards.Contains(cardId))
                 throw new CardNotOwnedOrInDeckException();
 
@@ -110,10 +111,10 @@ namespace SWE1.MessageServer.DAL
             }
             DatabaseCardDao cardDao = new DatabaseCardDao();
             var cards = cardDao.GetUserCards(username);
-            if (cards.Contains(cardId))
+            if (cards.Contains( cardId))
             {
                 var userDeck = cardDao.GetUserDeck(username);
-                if (userDeck.Contains(cardId))
+                if (userDeck.All((card)=> card.Id.Equals(cardId)))
                     throw new CardNotOwnedOrRequirementsNotMetException();
             }
             else

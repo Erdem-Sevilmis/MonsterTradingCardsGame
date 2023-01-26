@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.Card;
+using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using SWE1.MessageServer.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +11,15 @@ namespace SWE1.MessageServer.BLL.package
 {
     internal class PackageManager : IPackageManager
     {
-        public void AcquireNewPackage(string username)
+        private DatabasePackageDao DatabasePackageDao = new DatabasePackageDao();
+        public void AcquireNewPackage(User identity)
         {
-            throw new NotImplementedException();
+            DatabasePackageDao.AddPackageToPlayer(identity);
         }
-
-        public void NewPackage(Guid[] package)
+        
+        public void NewPackage(User identity, Card[] cardIds)
         {
-            throw new NotImplementedException();
+            DatabasePackageDao.CreatePackage(cardIds);
         }
     }
 }

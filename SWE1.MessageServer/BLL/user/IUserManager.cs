@@ -12,7 +12,7 @@ namespace SWE1.MessageServer.BLL.user
     {
         User LoginUser(Credentials credentials);
         void RegisterUser(Credentials credentials);
-        void UpdateUser(User identity, string newUsername);
+        void UpdateUser(User identity, string username, UserData userdata);
         User GetUserByAuthToken(string authToken);
     }
 }

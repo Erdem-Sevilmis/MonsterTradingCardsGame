@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.game
 {
-    internal class GameManager
+    internal class GameManager : IGameManager
     {
     }
 }

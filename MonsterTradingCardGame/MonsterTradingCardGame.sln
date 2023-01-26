@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonsterTradingCardGame", "MonsterTradingCardGame.csproj", "{335E69F4-BEB6-4F94-91E3-FD0D8EAF7F62}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWE1.MessageServer", "..\SWE1.MessageServer\SWE1.MessageServer.csproj", "{144F096F-96AC-45A7-B2D1-2B2BCE7FF945}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWE1.MessageServer.Core", "..\SWE1.MessageServer.Core\SWE1.MessageServer.Core.csproj", "{0FE4310B-1A1F-4F13-A322-A86D5ECF80E3}"
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{335E69F4-BEB6-4F94-91E3-FD0D8EAF7F62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{335E69F4-BEB6-4F94-91E3-FD0D8EAF7F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{335E69F4-BEB6-4F94-91E3-FD0D8EAF7F62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{335E69F4-BEB6-4F94-91E3-FD0D8EAF7F62}.Release|Any CPU.Build.0 = Release|Any CPU
 		{144F096F-96AC-45A7-B2D1-2B2BCE7FF945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{144F096F-96AC-45A7-B2D1-2B2BCE7FF945}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{144F096F-96AC-45A7-B2D1-2B2BCE7FF945}.Release|Any CPU.ActiveCfg = Release|Any CPU

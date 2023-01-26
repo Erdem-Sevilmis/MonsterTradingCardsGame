@@ -27,6 +27,11 @@ namespace SWE1.MessageServer.API.RouteCommands.Users
         public override Response Execute()
         {
             var response = new Response();
+            if (identity.Token != username + "-mtcgToken" && username != "admin")
+            {
+                response.StatusCode = StatusCode.Unauthorized;
+                return response;
+            }
             User user;
 
             user = _userManager.GetUserByAuthToken(identity.Token);

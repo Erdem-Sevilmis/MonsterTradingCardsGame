@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.Card;
+using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using SWE1.MessageServer.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,19 +11,20 @@ namespace SWE1.MessageServer.BLL.cards
 {
     internal class CardsManager : ICardsManager
     {
-        public bool ConfigureNewDeck(string username, Guid[] cardIds)
+        private DatabaseCardDao DatabaseCardDao = new DatabaseCardDao();
+        public bool ConfigureNewDeck(User identity, Guid[] cardIds)
         {
-            throw new NotImplementedException();
+            return DatabaseCardDao.ConfigureNewDeck(identity,cardIds);
         }
 
-        public List<Guid> GetUserCards(string username)
+        public List<Guid> GetUserCards(User identity)
         {
-            throw new NotImplementedException();
+           return DatabaseCardDao.GetUserCards(identity.Credentials.Username);
         }
 
-        public List<Guid> GetUserDeck(string username)
+        public List<Card> GetUserDeck(User identity)
         {
-            throw new NotImplementedException();
+           return DatabaseCardDao.GetUserDeck(identity.Credentials.Username);
         }
     }
 }

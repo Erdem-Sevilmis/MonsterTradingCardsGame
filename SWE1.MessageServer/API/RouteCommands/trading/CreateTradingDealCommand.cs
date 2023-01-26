@@ -4,6 +4,7 @@ using SWE1.MessageServer.BLL.trading;
 using SWE1.MessageServer.Core.Response;
 using SWE1.MessageServer.Core.Routing;
 using SWE1.MessageServer.DAL;
+using SWE1.MessageServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

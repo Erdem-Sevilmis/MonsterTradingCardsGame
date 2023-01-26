@@ -24,7 +24,7 @@ namespace SWE1.MessageServer.BLL.user
 
         public void RegisterUser(Credentials credentials)
         {
-            var user = new User(credentials.Username, credentials.Password);
+            var user = new User(credentials.Username, credentials.Password,20);
             if (_userDao.InsertUser(user) == false)
             {
                 throw new DuplicateUserException();
@@ -35,10 +35,10 @@ namespace SWE1.MessageServer.BLL.user
         {
             return _userDao.GetUserByAuthToken(authToken) ?? throw new UserNotFoundException();
         }
-
-        public void UpdateUser(Credentials olduser, Credentials newUser)
+        
+        public void UpdateUser(User identity, string username, UserData userdata)
         {
-            throw new NotImplementedException();
+            _userDao.UpdateUser(identity, username, userdata);
         }
     }
 }
