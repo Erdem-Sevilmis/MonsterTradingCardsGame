@@ -2,7 +2,7 @@
 {
     public partial class TradingDeal
     {
-        public enum SpellOrMonster
+        public enum SpellMonster
         {
             monster, spell
         }

@@ -1,0 +1,16 @@
+Describe design
+-
+
+Describe lessons learned
+-
+
+Describe unit testing decisions
+-
+
+Describes unique fearture
+-
+
+Tracked time
+-
+
+link to GIT: https://github.com/Erdem-Sevilmis/MonsterTradingCardsGame

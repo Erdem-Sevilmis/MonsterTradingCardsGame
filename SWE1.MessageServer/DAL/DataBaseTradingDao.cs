@@ -1,6 +1,7 @@
 ﻿using MonsterTradingCardsGame;
 using Npgsql;
 using SWE1.MessageServer.API.RouteCommands.trading;
+using SWE1.MessageServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,12 @@ namespace SWE1.MessageServer.DAL
             DataBase db = new DataBase();
             connection = db.connection;
         }
-        public bool CreateNewTradingDeal(string username, Guid cardId)
+        public bool CreateNewTradingDeal(string username, TradingDeal tradindeal)
         {
-            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where card_id=@cardId", connection))
+            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where id=@id", connection))
             {
                 // Add the parameter and its value
-                cmd.Parameters.AddWithValue("@cardId", cardId);
+                cmd.Parameters.AddWithValue("@id", tradindeal.Id);
                 // Execute the update statement
                 using var reader = cmd.ExecuteReader();
                 if (reader.HasRows)
@@ -31,7 +32,7 @@ namespace SWE1.MessageServer.DAL
 
             DatabaseCardDao cardDao = new DatabaseCardDao();
             var cards = cardDao.GetUserCards(username);
-            if (cards.Contains(cardId))
+            if (cards.Contains(tradindeal.CardToTrade))
             {
                 var userDeck = cardDao.GetUserDeck(username);
                 if (userDeck.All((card) => card.Id.Equals(card)))
@@ -40,10 +41,12 @@ namespace SWE1.MessageServer.DAL
             else
                 return false;
 
-            using (var cmd = new NpgsqlCommand("INSERT INTO tradings (card_id , username ) VALUES (@card_id, @username )", connection))
+            using (var cmd = new NpgsqlCommand("INSERT INTO tradings (id, minimum_damage, type, username ) VALUES (@id, @minimum_damage,@type,@username )", connection))
             {
                 // Add the parameter and its value
-                cmd.Parameters.AddWithValue("@card_id", cardId);
+                cmd.Parameters.AddWithValue("@id", tradindeal.Id);
+                cmd.Parameters.AddWithValue("@minimum_damage", tradindeal.MinimumDamage);
+                cmd.Parameters.AddWithValue("@type", tradindeal.Type);
                 cmd.Parameters.AddWithValue("@username", username);
                 cmd.ExecuteNonQuery();
                 return true;
@@ -53,15 +56,13 @@ namespace SWE1.MessageServer.DAL
         public List<Guid> GetTradingDeals(string username)
         {
             List<Guid> availableTrades = new List<Guid>();
-            using (var cmd = new NpgsqlCommand("SELECT card_id FROM tradings where username != @username", connection))
+            using (var cmd = new NpgsqlCommand("SELECT id FROM tradings", connection))
             {
-                // Add the parameter and its value
-                cmd.Parameters.AddWithValue("username", username);
                 using var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    availableTrades.Add((Guid)reader["card_id "]);
+                    availableTrades.Add((Guid)reader["id"]);
                 }
             }
             if (availableTrades.Count <= 0)
@@ -73,10 +74,10 @@ namespace SWE1.MessageServer.DAL
 
         public bool DeleteTradingDeal(string username, Guid cardId)
         {
-            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where card_id=@cardId", connection))
+            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where id=@id", connection))
             {
                 // Add the parameter and its value
-                cmd.Parameters.AddWithValue("@cardId", cardId);
+                cmd.Parameters.AddWithValue("@id", cardId);
                 // Execute the update statement
                 using var reader = cmd.ExecuteReader();
                 if (!reader.HasRows)
@@ -89,7 +90,7 @@ namespace SWE1.MessageServer.DAL
             if (!cards.Contains(cardId))
                 throw new CardNotOwnedOrInDeckException();
 
-            using (var cmd = new NpgsqlCommand("DELETE FROM tradings where card_id=@cardId", connection))
+            using (var cmd = new NpgsqlCommand("DELETE FROM tradings where id=@id", connection))
             {
                 cmd.Parameters.AddWithValue("@cardId", cardId);
                 cmd.ExecuteNonQuery();
@@ -100,10 +101,10 @@ namespace SWE1.MessageServer.DAL
         public bool Trade(string username, Guid cardId, Guid otherCardId)
         {
             string otherUsername = String.Empty;
-            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where card_id=@cardId", connection))
+            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where id=@id", connection))
             {
                 // Add the parameter and its value
-                cmd.Parameters.AddWithValue("@cardId", cardId);
+                cmd.Parameters.AddWithValue("@id", cardId);
                 // Execute the update statement
                 using var reader = cmd.ExecuteReader();
                 if (!reader.HasRows)
@@ -111,18 +112,18 @@ namespace SWE1.MessageServer.DAL
             }
             DatabaseCardDao cardDao = new DatabaseCardDao();
             var cards = cardDao.GetUserCards(username);
-            if (cards.Contains( cardId))
+            if (cards.Contains(cardId))
             {
                 var userDeck = cardDao.GetUserDeck(username);
-                if (userDeck.All((card)=> card.Id.Equals(cardId)))
+                if (userDeck.All((card) => card.Id.Equals(cardId)))
                     throw new CardNotOwnedOrRequirementsNotMetException();
             }
             else
                 throw new CardNotOwnedOrRequirementsNotMetException();
 
-            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where card_id=@cardId", connection))
+            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where id=@id", connection))
             {
-                cmd.Parameters.AddWithValue("cardId", otherCardId);
+                cmd.Parameters.AddWithValue("id", otherCardId);
                 // Execute the update statement
                 using var reader = cmd.ExecuteReader();
                 if (reader.Read())

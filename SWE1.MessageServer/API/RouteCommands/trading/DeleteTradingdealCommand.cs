@@ -15,18 +15,18 @@ namespace SWE1.MessageServer.API.RouteCommands.trading
     internal class DeleteTradingdealCommand : AuthenticatedRouteCommand
     {
         private readonly ITradingManager _tradingManager;
-        private readonly TradingDeal tradingDeal;
-        public DeleteTradingdealCommand(User identity, ITradingManager tradingManager, TradingDeal tradingDeal) : base(identity)
+        private readonly Guid cardid;
+        public DeleteTradingdealCommand(User identity, ITradingManager tradingManager, Guid cardid) : base(identity)
         {
             _tradingManager = tradingManager;
-            this.tradingDeal = tradingDeal;
+            this.cardid = cardid;
         }
         public override Response Execute()
         {
             var response = new Response();
             try
             {
-                _tradingManager.DeleteTradingDeal(this.Identity.Credentials, tradingDeal);
+                _tradingManager.DeleteTradingDeal(this.Identity.Credentials, cardid);
                 response.StatusCode = StatusCode.Ok;
             }
             catch (CardNotOwnedOrInDeckException)

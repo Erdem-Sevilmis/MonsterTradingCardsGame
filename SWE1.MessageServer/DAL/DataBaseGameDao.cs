@@ -17,8 +17,8 @@ namespace SWE1.MessageServer.DAL
         }
         public UserStats GetStats(User identity)
         {
-            using var cmd = new NpgsqlCommand("SELECT * FROM stats WHERE username=@username", connection);
-            cmd.Parameters.AddWithValue("@username", identity.Credentials.Username);
+            using var cmd = new NpgsqlCommand("SELECT * FROM stats WHERE name=@name", connection);
+            cmd.Parameters.AddWithValue("@name", identity.Credentials.Username);
             using var reader = cmd.ExecuteReader();
             if (!reader.Read())
                 return null;
@@ -35,7 +35,6 @@ namespace SWE1.MessageServer.DAL
         {
             List<UserStats> scoreboard = new List<UserStats>();
             using var cmd = new NpgsqlCommand("SELECT * FROM stats", connection);
-            cmd.Parameters.AddWithValue("@username", identity.Credentials.Username);
             using var reader = cmd.ExecuteReader();
             if (!reader.Read())
                 return null;

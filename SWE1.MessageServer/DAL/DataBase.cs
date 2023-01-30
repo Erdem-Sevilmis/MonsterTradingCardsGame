@@ -4,6 +4,7 @@ using MonsterTradingCardsGame.SWE1.MessageServer.Models.Card;
 using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
 using System;
+using static SWE1.MessageServer.Models.TradingDeal;
 
 namespace MonsterTradingCardsGame
 {
@@ -16,6 +17,7 @@ namespace MonsterTradingCardsGame
             this.connection = new NpgsqlConnection(CONNECTIONSTRING);
             NpgsqlConnection.GlobalTypeMapper.MapEnum<Card_Type>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<ElementType>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<SpellMonster>();
             connection.Open();
         }
         public void Start()

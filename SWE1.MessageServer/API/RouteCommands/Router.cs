@@ -64,21 +64,10 @@ namespace SWE1.MessageServer.API.RouteCommands
 
             IRouteCommand? command = request switch
             {
-                /*
-                { Method: HttpMethod.Post, ResourcePath: "/users" } => new RegisterCommand(_userManager, Deserialize<Credentials>(request.Payload)),
-                { Method: HttpMethod.Post, ResourcePath: "/sessions"} => new LoginCommand(_userManager, Deserialize<Credentials>(request.Payload)),
-
-                { Method: HttpMethod.Post, ResourcePath: "/messages"} => new AddMessageCommand(_messageManager, identity(request), EnsureBody(request.Payload)),
-                { Method: HttpMethod.Get, ResourcePath: "/messages" } => new ListMessagesCommand(_messageManager, identity(request)),
-
-                { Method: HttpMethod.Get, ResourcePath: var path} when isMatch(path) => new ShowMessageCommand(_messageManager, identity(request), parseId(path)),
-                { Method: HttpMethod.Put, ResourcePath: var path } when isMatch(path) => new UpdateMessageCommand(_messageManager, identity(request), parseId(path), EnsureBody(request.Payload)),
-                { Method: HttpMethod.Delete, ResourcePath: var path } when isMatch(path) => new RemoveMessageCommand(_messageManager, identity(request), parseId(path)),
-                */
                 //users
                 { Method: HttpMethod.Post, ResourcePath: "/users" } => new RegisterCommand(_userManager, Deserialize<Credentials>(request.Payload)),
                 { Method: HttpMethod.Get, ResourcePath: var path } when isMatchUsername(path) => new GetCommand(identity(request), _userManager, parseUsername(path)),
-                { Method: HttpMethod.Put, ResourcePath: var path }  when isMatchUsername(path) => new UpdateCommand(identity(request), _userManager, parseUsername(path), Deserialize<UserData>(request.Payload)),
+                { Method: HttpMethod.Put, ResourcePath: var path } when isMatchUsername(path) => new UpdateCommand(identity(request), _userManager, parseUsername(path), Deserialize<UserData>(request.Payload)),
                 { Method: HttpMethod.Post, ResourcePath: "/sessions" } => new LoginCommand(_userManager, Deserialize<Credentials>(request.Payload)),
 
                 //package
@@ -92,16 +81,15 @@ namespace SWE1.MessageServer.API.RouteCommands
 
                 //game
                 { Method: HttpMethod.Get, ResourcePath: "/stats" } => new GetStatsCommand(identity(request), _gameManager),
-                { Method: HttpMethod.Get, ResourcePath: "/scoreboard" } => new GetScoreBoard(identity(request), _gameManager),
-                /*
-                { Method: HttpMethod.Post, ResourcePath: "/battle" } => new ConfigureDeckCommand(Deserialize<Credentials>(request.Payload), _gameManager), 
-                 */
+                { Method: HttpMethod.Get, ResourcePath: "/score" } => new GetScoreBoard(identity(request), _gameManager),
+                { Method: HttpMethod.Post, ResourcePath: "/battles" } => new BattleCommand(identity(request), _gameManager),
+
 
                 //tradings
-                { Method: HttpMethod.Get, ResourcePath: "/tradings " } => new GetAllTradingDealsCommand(identity(request), _tradingManager),
+                { Method: HttpMethod.Get, ResourcePath: "/tradings" } => new GetAllTradingDealsCommand(identity(request), _tradingManager),
                 { Method: HttpMethod.Post, ResourcePath: "/tradings" } => new CreateTradingDealCommand(identity(request), _tradingManager, Deserialize<TradingDeal>(request.Payload)),
                 { Method: HttpMethod.Post, ResourcePath: var path } when isMatchTradingdealId(path) => new CarryOutTradeCommand(identity(request), _tradingManager, Guid.Parse(parseTradingdealId(path)), Deserialize<TradingDeal>(request.Payload)),
-                { Method: HttpMethod.Delete, ResourcePath: var path } when isMatchTradingdealId(path) => new DeleteTradingdealCommand(identity(request), _tradingManager, Deserialize<TradingDeal>(request.Payload)),
+                { Method: HttpMethod.Delete, ResourcePath: var path } when isMatchTradingdealId(path) => new DeleteTradingdealCommand(identity(request), _tradingManager, Guid.Parse(parseTradingdealId(path))),
 
                 _ => null
             };

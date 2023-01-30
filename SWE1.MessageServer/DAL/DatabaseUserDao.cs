@@ -87,7 +87,30 @@ namespace SWE1.MessageServer.DAL
                 // this might happen, if the user already exists (constraint violation)
                 return false;
             }
+            InsertStats(user);
             return true;
+        }
+
+        private void InsertStats(User user)
+        {
+            using var cmd = new NpgsqlCommand("INSERT INTO stats(name, elo, wins,losses) VALUES(@name, @elo, @wins, @losses)", connection)
+            {
+                Parameters =
+                {
+                    new("name", user.Credentials.Username),
+                    new("elo", 100),
+                    new("wins",DbType.Int32){Value=0},
+                    new("losses",DbType.Int32){Value=0}
+                }
+            };
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (PostgresException)
+            {
+                // this might happen, if the user already exists (constraint violation)
+            }
         }
 
         public void UpdateUser(User identity, string username, UserData userdata)
