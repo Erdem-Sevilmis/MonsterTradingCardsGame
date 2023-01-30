@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands
 {
-    internal abstract class NewPackageCommand : IRouteCommand
+    internal abstract class AuthenticatedRouteCommand : IRouteCommand
     {
         public User Identity { get; private set; }
 
-        public NewPackageCommand(User identity)
+        public AuthenticatedRouteCommand(User identity)
         {
             Identity = identity;
         }

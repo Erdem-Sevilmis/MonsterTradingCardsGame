@@ -4,7 +4,7 @@ using SWE1.MessageServer.Core.Response;
 
 namespace SWE1.MessageServer.API.RouteCommands.game
 {
-    internal class GetScoreBoard : NewPackageCommand
+    internal class GetScoreBoard : AuthenticatedRouteCommand
     {
         private User identity;
         private IGameManager gameManager;

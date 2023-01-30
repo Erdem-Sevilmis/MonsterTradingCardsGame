@@ -1,7 +1,7 @@
 ﻿using MonsterTradingCardsGame;
 using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
 using Npgsql;
-using SWE1.MessageServer.API.RouteCommands.Users;
+using SWE1.MessageServer.API.RouteCommands.packages;
 using SWE1.MessageServer.BLL.user;
 using System;
 using System.Collections.Generic;
