@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.trading
 {
-    internal class DeleteTradingdealCommand : AuthenticatedRouteCommand
+    internal class DeleteTradingdealCommand : NewPackageCommand
     {
         private readonly ITradingManager _tradingManager;
         private readonly TradingDeal tradingDeal;

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
-    internal class GetCardsCommand : AuthenticatedRouteCommand
+    internal class GetCardsCommand : NewPackageCommand
     {
         private readonly ICardsManager _cardsManager;
 

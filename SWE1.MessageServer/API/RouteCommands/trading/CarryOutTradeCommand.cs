@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.trading
 {
-    internal class CarryOutTradeCommand : AuthenticatedRouteCommand
+    internal class CarryOutTradeCommand : NewPackageCommand
     {
         private readonly ITradingManager _tradingManager;
         private readonly Guid cardId;

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.Users
 {
-    internal class GetCommand : AuthenticatedRouteCommand
+    internal class GetCommand : NewPackageCommand
     {
         private readonly IUserManager _userManager;
         private readonly string username;
