@@ -5,7 +5,7 @@ using SWE1.MessageServer.Core.Response;
 
 namespace SWE1.MessageServer.API.RouteCommands
 {
-    internal class BuyPackageCommand : NewPackageCommand
+    internal class BuyPackageCommand : AuthenticatedRouteCommand
     {
         private User user;
         private IPackageManager packageManager;
