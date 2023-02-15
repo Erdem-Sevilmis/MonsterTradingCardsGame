@@ -15,5 +15,10 @@
             this.Wins = wins;
             this.Losses = losses;
         }
+
+        public override string? ToString()
+        {
+            return $"\tName: {Name}\n\tElo: {Elo}\n\tWins: {Wins}\n\tLosses: {Losses}";
+        }
     }
 }

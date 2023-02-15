@@ -21,6 +21,12 @@ namespace SWE1.MessageServer.API.RouteCommands.game
             try
             {
                 var stats = gameManager.GetScoreboard(this.Identity);
+                string message = String.Empty;
+                for (int i = 0; i < stats.Count; i++)
+                {
+                    message += (i + 1) + ":\n" + stats[i].ToString() + "\n";
+                }
+                response.Payload = message;
                 response.StatusCode = StatusCode.Ok;
             }
             catch (Exception)

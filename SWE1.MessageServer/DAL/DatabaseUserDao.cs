@@ -9,6 +9,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SWE1.MessageServer.DAL
 {
@@ -112,13 +114,26 @@ namespace SWE1.MessageServer.DAL
                 // this might happen, if the user already exists (constraint violation)
             }
         }
-
-        public void UpdateUser(User identity, string username, UserData userdata)
+        public UserData GetUserData(User identity)
         {
-            if (username != identity.Credentials.Username && username != "admin")
-                throw new UserNotAdminException();
-
-
+            UserData userData;
+            using (var cmd = new NpgsqlCommand("SELECT name,bio,image FROM user_account WHERE username=@username", connection))
+            {
+                cmd.Parameters.AddWithValue("username", identity.Credentials.Username);
+                using NpgsqlDataReader reader = cmd.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    throw new UserNotFoundException();
+                }
+                if (!reader.Read())
+                    return null;
+                
+                userData = new UserData(reader["name"].ToString(), reader["bio"].ToString(), reader["image"].ToString());
+                return userData;
+            }
+        }
+        public void UpdateUserData(User identity, UserData userdata)
+        {
             using (var cmd = new NpgsqlCommand("SELECT * FROM user_account", connection))
             {
                 using NpgsqlDataReader reader = cmd.ExecuteReader();
@@ -129,7 +144,7 @@ namespace SWE1.MessageServer.DAL
             }
 
 
-            using (var cmd = new NpgsqlCommand("INSERT INTO user_account(name,bio,image) VALUES(@name,@bio,@image) WHERE username=@username", connection))
+            using (var cmd = new NpgsqlCommand("UPDATE user_account SET name=@name,bio=@bio,image=@image WHERE username=@username", connection))
             {
                 cmd.Parameters.AddWithValue("name", userdata.Name);
                 cmd.Parameters.AddWithValue("bio", userdata.Bio);
@@ -139,6 +154,7 @@ namespace SWE1.MessageServer.DAL
                 try
                 {
                     cmd.ExecuteNonQuery();
+
                 }
                 catch (Exception)
                 {

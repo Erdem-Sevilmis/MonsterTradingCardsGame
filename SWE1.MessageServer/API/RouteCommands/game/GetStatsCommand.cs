@@ -22,7 +22,9 @@ namespace SWE1.MessageServer.API.RouteCommands.game
             var response = new Response();
             try
             {
-                var stats = gameManager.GetStats(this.Identity);
+                UserStats stats = gameManager.GetStats(this.Identity);
+                string message = stats.ToString() + "\n";
+                response.Payload = message;
                 response.StatusCode = StatusCode.Ok;
             }
             catch (Exception)

@@ -11,5 +11,12 @@
             Bio = bio;
             Image = image;
         }
+
+        public bool IsEmpty() => Name == "" || Bio == "" || Image == "";
+
+        public override string? ToString()
+        {
+            return $"\tName: {Name}\n\tBio: {Bio}\n\tImage: {Image}";
+        }
     }
 }

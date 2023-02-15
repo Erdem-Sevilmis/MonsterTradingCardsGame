@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Xml.Linq;
 
 namespace MonsterTradingCardsGame.SWE1.MessageServer.Models.User
 {
@@ -19,6 +20,10 @@ namespace MonsterTradingCardsGame.SWE1.MessageServer.Models.User
             Credentials = new Credentials(username, password);
             Coins = coins;
 
+        }
+        public override string? ToString()
+        {
+            return UserData.ToString();
         }
     }
 }
