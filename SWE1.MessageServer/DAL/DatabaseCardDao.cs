@@ -24,14 +24,14 @@ namespace SWE1.MessageServer.DAL
             DataBase db = new DataBase();
             connection = db.connection;
         }
-        public List<Guid> GetUserCards(string username)
+        public List<Card> GetUserCards(string username)
         {
-            List<Guid> cards = new List<Guid>();
+            List<Card> cards = new List<Card>();
 
-            var allcards = Enumerable.Concat(GetUserStack(username), GetUserDeck(username).Select((card) => card.Id));
-            foreach (var card in allcards)
+            var allcardIds = Enumerable.Concat(GetUserStack(username), GetUserDeck(username).Select((card) => card.Id));
+            foreach (var cardId in allcardIds)
             {
-                cards.Add(card);
+                cards.Add(GetCard(cardId));
             }
             return cards;
         }
@@ -43,9 +43,22 @@ namespace SWE1.MessageServer.DAL
             if (!reader.Read())
                 return null;
 
+            DataBase.Card_Type name = DataBase.Card_Type.None;
             var id = (Guid)reader["card_id"];
             var damage = (float)reader["damage"];
-            Enum.TryParse(reader["name"].ToString(), out DataBase.Card_Type name);
+
+            //TODO: Fix this reader[name] to enum conversion failes even though the value is valid and gets set to ?WaterGoblin?
+            if (Enum.TryParse(reader["name"].ToString(), out name))
+            {
+                Console.WriteLine("Valid");
+            }
+            else
+            {
+                Console.WriteLine("failed");
+            }
+
+            Console.WriteLine(name.ToString());
+            Console.WriteLine(reader["name"].ToString());
             Enum.TryParse(reader["element"].ToString(), out ElementType element);
             return new Card(name, damage, id, element);
         }
@@ -93,7 +106,7 @@ namespace SWE1.MessageServer.DAL
                 throw new NotEnoughCardsinDeckException();
 
             var cards = GetUserCards(user.Credentials.Username);
-            if (!cardIds.All(elem => cards.Contains(elem)))
+            if (!cardIds.All(elem => cards.Any(card => card.Id == elem)))
                 throw new CardNotOwnedOrUnavailableException();
 
             using var cmd = new NpgsqlCommand("UPDATE user_account SET deck = @deck WHERE username = @username", connection);

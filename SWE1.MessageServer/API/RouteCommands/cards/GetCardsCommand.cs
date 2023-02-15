@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using Newtonsoft.Json;
 using SWE1.MessageServer.BLL.cards;
 using SWE1.MessageServer.Core.Response;
 using SWE1.MessageServer.Core.Routing;
@@ -14,7 +15,7 @@ namespace SWE1.MessageServer.API.RouteCommands.cards
     {
         private readonly ICardsManager _cardsManager;
 
-        public GetCardsCommand(User identity, ICardsManager cardsManager): base(identity)
+        public GetCardsCommand(User identity, ICardsManager cardsManager) : base(identity)
         {
             _cardsManager = cardsManager;
         }
@@ -24,8 +25,14 @@ namespace SWE1.MessageServer.API.RouteCommands.cards
             var response = new Response();
             try
             {
-                _cardsManager.GetUserCards(this.Identity);
+                var userCards = _cardsManager.GetUserCards(this.Identity);
                 response.StatusCode = StatusCode.Ok;
+                string message = String.Empty;
+                foreach (var card in userCards)
+                {
+                    message += "\t" + card.ToString() + "\n";
+                }
+                response.Payload = message;
             }
             catch (NoCardsException)
             {
