@@ -36,16 +36,12 @@ namespace SWE1.MessageServer.API.RouteCommands.Users
             }
             try
             {
-                _userManager.UpdateUser(identity, username, userdata);
+                _userManager.UpdateUser(identity, userdata);
                 response.StatusCode = StatusCode.Ok;
             }
             catch (UserNotFoundException)
             {
                 response.StatusCode = StatusCode.NotFound;
-            }
-            catch(UserNotAdminException)
-            {
-                response.StatusCode = StatusCode.Unauthorized;
             }
             return response;
         }

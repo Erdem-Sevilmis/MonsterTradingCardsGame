@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using static SWE1.MessageServer.Models.TradingDeal;
 
 namespace SWE1.MessageServer.DAL
 {
@@ -32,7 +34,8 @@ namespace SWE1.MessageServer.DAL
 
             DatabaseCardDao cardDao = new DatabaseCardDao();
             var cards = cardDao.GetUserCards(username);
-            if (cards.Contains(tradindeal.CardToTrade))
+
+            if (cards.Any(e => e.Id == tradindeal.CardToTrade))
             {
                 var userDeck = cardDao.GetUserDeck(username);
                 if (userDeck.All((card) => card.Id.Equals(card)))
@@ -41,58 +44,73 @@ namespace SWE1.MessageServer.DAL
             else
                 return false;
 
-            using (var cmd = new NpgsqlCommand("INSERT INTO tradings (id, minimum_damage, type, username ) VALUES (@id, @minimum_damage,@type,@username )", connection))
+            using (var cmd = new NpgsqlCommand("INSERT INTO tradings (id, cardid, minimum_damage, type, username ) VALUES (@id, @cardid, @minimum_damage,@type,@username )", connection))
             {
                 // Add the parameter and its value
                 cmd.Parameters.AddWithValue("@id", tradindeal.Id);
+                cmd.Parameters.AddWithValue("@cardid", tradindeal.CardToTrade);
                 cmd.Parameters.AddWithValue("@minimum_damage", tradindeal.MinimumDamage);
                 cmd.Parameters.AddWithValue("@type", tradindeal.Type);
                 cmd.Parameters.AddWithValue("@username", username);
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    cmd.ExecuteNonQuery();
+
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("wadehell");
+                }
                 return true;
             }
         }
 
-        public List<Guid> GetTradingDeals(string username)
+        public List<TradingDeal> GetTradingDeals(string username)
         {
-            List<Guid> availableTrades = new List<Guid>();
-            using (var cmd = new NpgsqlCommand("SELECT id FROM tradings", connection))
+            List<TradingDeal> availableTrades = new List<TradingDeal>();
+            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings", connection))
             {
                 using var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    availableTrades.Add((Guid)reader["id"]);
+                    SpellMonster name;
+                    Enum.TryParse(reader["type"].ToString(), out name);
+                    availableTrades.Add(new TradingDeal((Guid)reader["id"], (Guid)reader["cardid"], name, int.Parse(reader["minimum_damage"].ToString())));
                 }
             }
             if (availableTrades.Count <= 0)
                 throw new NoTradsAvailbleException();
 
-
             return availableTrades;
         }
 
-        public bool DeleteTradingDeal(string username, Guid cardId)
+        public bool DeleteTradingDeal(string username, Guid tradeID)
         {
+            Guid cardID = new Guid();
             using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where id=@id", connection))
             {
                 // Add the parameter and its value
-                cmd.Parameters.AddWithValue("@id", cardId);
+                cmd.Parameters.AddWithValue("@id", tradeID);
                 // Execute the update statement
                 using var reader = cmd.ExecuteReader();
                 if (!reader.HasRows)
                     throw new CardNotFoundException();
+                if (reader.Read())
+                {
+                    cardID = (Guid)reader["cardid"];
+                }
             }
-
+            
             DatabaseCardDao cardDao = new DatabaseCardDao();
             var cards = cardDao.GetUserCards(username);
 
-            if (!cards.Contains(cardId))
+            if (!cards.Any(e => e.Id == cardID))
                 throw new CardNotOwnedOrInDeckException();
 
             using (var cmd = new NpgsqlCommand("DELETE FROM tradings where id=@id", connection))
             {
-                cmd.Parameters.AddWithValue("@cardId", cardId);
+                cmd.Parameters.AddWithValue("@id", tradeID);
                 cmd.ExecuteNonQuery();
                 return true;
             }
@@ -112,7 +130,7 @@ namespace SWE1.MessageServer.DAL
             }
             DatabaseCardDao cardDao = new DatabaseCardDao();
             var cards = cardDao.GetUserCards(username);
-            if (cards.Contains(cardId))
+            if (cards.Any(e => e.Id == cardId))
             {
                 var userDeck = cardDao.GetUserDeck(username);
                 if (userDeck.All((card) => card.Id.Equals(cardId)))

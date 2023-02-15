@@ -18,7 +18,7 @@ namespace SWE1.MessageServer.BLL.trading
 
         public bool DeleteTradingDeal(Credentials credentials, Guid cardid) => dataBaseTradingDao.DeleteTradingDeal(credentials.Username, cardid);
 
-        public List<Guid> GetTradingDeals(Credentials credentials) => dataBaseTradingDao.GetTradingDeals(credentials.Username);
+        public List<TradingDeal> GetTradingDeals(Credentials credentials) => dataBaseTradingDao.GetTradingDeals(credentials.Username);
 
     }
 }

@@ -11,7 +11,7 @@ namespace SWE1.MessageServer.BLL.trading
     internal interface ITradingManager
     {
         bool CreateNewTradingDeal(Credentials credentials, TradingDeal tradingdeal);
-        List<Guid> GetTradingDeals(Credentials credentials);
+        List<TradingDeal> GetTradingDeals(Credentials credentials);
         bool DeleteTradingDeal(Credentials credentials, Guid cardid);
         bool AcceptTradingDeal(Credentials credentials, Guid cardId, TradingDeal tradingDeal);
     }

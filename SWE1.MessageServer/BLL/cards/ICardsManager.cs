@@ -10,7 +10,7 @@ namespace SWE1.MessageServer.BLL.cards
 {
     internal interface ICardsManager
     {
-        List<Guid> GetUserCards(User identity);
+        List<Card> GetUserCards(User identity);
         List<Card> GetUserDeck(User identity);
         bool ConfigureNewDeck(User identity, Guid[] cardIds);
     }

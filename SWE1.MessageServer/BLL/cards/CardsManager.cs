@@ -16,8 +16,8 @@ namespace SWE1.MessageServer.BLL.cards
         {
             return DatabaseCardDao.ConfigureNewDeck(identity,cardIds);
         }
-
-        public List<Guid> GetUserCards(User identity)
+        
+        public List<Card> GetUserCards(User identity)
         {
            return DatabaseCardDao.GetUserCards(identity.Credentials.Username);
         }

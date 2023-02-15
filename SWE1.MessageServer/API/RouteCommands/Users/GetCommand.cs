@@ -31,18 +31,28 @@ namespace SWE1.MessageServer.API.RouteCommands.Users
             {
                 response.StatusCode = StatusCode.Unauthorized;
                 return response;
-            }
+            } 
             User user;
 
             user = _userManager.GetUserByAuthToken(identity.Token);
-            response.StatusCode = StatusCode.Ok;
-
             if (user == null)
             {
                 response.StatusCode = StatusCode.NotFound;
+                return response;
             }
+            var userdata = _userManager.GetUserData(user);
+            string message = String.Empty;
+            if (userdata.IsEmpty())
+            {
+                message = "\t" + "UserData is empty." + "\n";
+                response.Payload = message;
+                response.StatusCode = StatusCode.NoContent;
+                return response;
 
-
+            }
+            message = userdata.ToString() + "\n";
+            response.Payload = message;
+            response.StatusCode = StatusCode.Ok;
             return response;
         }
     }

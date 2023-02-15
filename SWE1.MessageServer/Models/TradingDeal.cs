@@ -16,5 +16,10 @@ namespace SWE1.MessageServer.Models
             this.Type = type;
             MinimumDamage = minimumDamage;
         }
+
+        public override string? ToString()
+        {
+            return $"\n\tId: {Id}\n\tCardToTrade: {CardToTrade}\n\tType: {Type}\n\tMinimumDamage: {MinimumDamage}";
+        }
     }
 }

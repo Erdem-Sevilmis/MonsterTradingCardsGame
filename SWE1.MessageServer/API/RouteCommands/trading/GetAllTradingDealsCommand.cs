@@ -13,10 +13,10 @@ namespace SWE1.MessageServer.API.RouteCommands.trading
 {
     internal class GetAllTradingDealsCommand : AuthenticatedRouteCommand
     {
-        
+
         private readonly ITradingManager _tradingManager;
 
-        public GetAllTradingDealsCommand(User identity, ITradingManager tradingManager): base(identity)
+        public GetAllTradingDealsCommand(User identity, ITradingManager tradingManager) : base(identity)
         {
             _tradingManager = tradingManager;
         }
@@ -26,7 +26,13 @@ namespace SWE1.MessageServer.API.RouteCommands.trading
             var response = new Response();
             try
             {
-                _tradingManager.GetTradingDeals(this.Identity.Credentials);
+                var tradingDeals = _tradingManager.GetTradingDeals(this.Identity.Credentials);
+                string message = String.Empty;
+                foreach (var deals in tradingDeals)
+                {
+                    message += "\t" + deals.ToString() + "\n";
+                }
+                response.Payload = message;
                 response.StatusCode = StatusCode.Ok;
             }
             catch (NoTradsAvailbleException)
