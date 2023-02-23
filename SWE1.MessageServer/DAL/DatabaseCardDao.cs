@@ -43,23 +43,26 @@ namespace SWE1.MessageServer.DAL
             if (!reader.Read())
                 return null;
 
-            DataBase.Card_Type name = DataBase.Card_Type.None;
+            DataBase.Card_Type name;
             var id = (Guid)reader["card_id"];
             var damage = (float)reader["damage"];
 
-            //TODO: Fix this reader[name] to enum conversion failes even though the value is valid and gets set to ?WaterGoblin?
-            if (Enum.TryParse(reader["name"].ToString(), out name))
+            
+            var parts = reader["name"].ToString().Split("_");
+            string filteredType = String.Empty;
+            foreach (var part in parts)
             {
-                Console.WriteLine("Valid");
+                StringBuilder sb = new StringBuilder(part);
+                sb[0] = char.ToUpper(sb[0]);
+
+                filteredType += sb.ToString();
             }
-            else
-            {
-                Console.WriteLine("failed");
-            }
+            Enum.TryParse<DataBase.Card_Type>(filteredType, out name);
 
             Console.WriteLine(name.ToString());
             Console.WriteLine(reader["name"].ToString());
-            Enum.TryParse(reader["element"].ToString(), out ElementType element);
+            //TODO: FixDATABASE cuz only "fire" is in it
+            Enum.TryParse<ElementType>(reader["element"].ToString(), out ElementType element);
             return new Card(name, damage, id, element);
         }
         public List<Card> GetUserDeck(string username)

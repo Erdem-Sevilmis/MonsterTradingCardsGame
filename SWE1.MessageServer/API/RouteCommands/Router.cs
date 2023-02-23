@@ -61,6 +61,16 @@ namespace SWE1.MessageServer.API.RouteCommands
             };
 
 
+            /*
+            Default return should be in json format
+            ToDo change to json. Use the already done json format in GetDeckCommand
+            EndPoints to change: 
+                 GetCommand
+                 GetCardsCommand
+                 GetStatsCommand
+                 GetScoreBoard
+                 GetAllTradingDealsCommand
+            */
 
             IRouteCommand? command = request switch
             {
