@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using Newtonsoft.Json;
 using SWE1.MessageServer.BLL.game;
 using SWE1.MessageServer.Core.Response;
 
@@ -18,7 +19,9 @@ namespace SWE1.MessageServer.API.RouteCommands.game
         public override Response Execute()
         {
             var response = new Response();
-            response.StatusCode = StatusCode.NotImplemented;
+            List<string> log = gameManager.GetInToBattle(user);
+            response.Payload = JsonConvert.SerializeObject(log.Select(card => card).ToArray());
+            response.StatusCode = StatusCode.Ok;
             return response;
         }
     }
