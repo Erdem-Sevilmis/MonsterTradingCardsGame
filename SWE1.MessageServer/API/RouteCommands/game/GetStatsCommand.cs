@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using Newtonsoft.Json;
 using SWE1.MessageServer.API.RouteCommands.cards;
 using SWE1.MessageServer.BLL.game;
 using SWE1.MessageServer.Core.Response;
@@ -23,8 +24,7 @@ namespace SWE1.MessageServer.API.RouteCommands.game
             try
             {
                 UserStats stats = gameManager.GetStats(this.Identity);
-                string message = stats.ToString() + "\n";
-                response.Payload = message;
+                response.Payload = JsonConvert.SerializeObject(stats);
                 response.StatusCode = StatusCode.Ok;
             }
             catch (Exception)

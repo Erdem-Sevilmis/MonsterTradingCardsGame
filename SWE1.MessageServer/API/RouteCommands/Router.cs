@@ -60,18 +60,6 @@ namespace SWE1.MessageServer.API.RouteCommands
                 return dict["format"];
             };
 
-
-            /*
-            Default return should be in json format
-            ToDo change to json. Use the already done json format in GetDeckCommand
-            EndPoints to change: 
-                 GetCommand
-                 GetCardsCommand
-                 GetStatsCommand
-                 GetScoreBoard
-                 GetAllTradingDealsCommand
-            */
-
             IRouteCommand? command = request switch
             {
                 //users
@@ -80,7 +68,7 @@ namespace SWE1.MessageServer.API.RouteCommands
                 { Method: HttpMethod.Put, ResourcePath: var path } when isMatchUsername(path) => new UpdateCommand(identity(request), _userManager, parseUsername(path), Deserialize<UserData>(request.Payload)),
                 { Method: HttpMethod.Post, ResourcePath: "/sessions" } => new LoginCommand(_userManager, Deserialize<Credentials>(request.Payload)),
 
-                //package
+                //packag
                 { Method: HttpMethod.Post, ResourcePath: "/packages" } => new NewPackageCommand(identity(request), _packageManager, Deserialize<Card[]>(request.Payload)),
                 { Method: HttpMethod.Post, ResourcePath: "/transactions/packages" } => new BuyPackageCommand(identity(request), _packageManager),
 

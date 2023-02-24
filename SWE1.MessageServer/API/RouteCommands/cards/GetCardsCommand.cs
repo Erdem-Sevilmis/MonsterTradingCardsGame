@@ -27,12 +27,7 @@ namespace SWE1.MessageServer.API.RouteCommands.cards
             {
                 var userCards = _cardsManager.GetUserCards(this.Identity);
                 response.StatusCode = StatusCode.Ok;
-                string message = String.Empty;
-                foreach (var card in userCards)
-                {
-                    message += "\t" + card.ToString() + "\n";
-                }
-                response.Payload = message;
+                response.Payload = JsonConvert.SerializeObject(userCards.Select(card => new { id = card.Id, name = card.Name, damage = card.Damage, element = card.ElementType }).ToArray());
             }
             catch (NoCardsException)
             {

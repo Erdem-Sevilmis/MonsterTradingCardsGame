@@ -1,9 +1,11 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using Newtonsoft.Json;
 using SWE1.MessageServer.BLL.trading;
 using SWE1.MessageServer.BLL.user;
 using SWE1.MessageServer.Core.Response;
 using SWE1.MessageServer.Core.Routing;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,12 +29,7 @@ namespace SWE1.MessageServer.API.RouteCommands.trading
             try
             {
                 var tradingDeals = _tradingManager.GetTradingDeals(this.Identity.Credentials);
-                string message = String.Empty;
-                foreach (var deals in tradingDeals)
-                {
-                    message += "\t" + deals.ToString() + "\n";
-                }
-                response.Payload = message;
+                response.Payload = JsonConvert.SerializeObject(tradingDeals.Select(deal => new { Id = deal.Id, CardToTrade = deal.CardToTrade, Type = deal.Type, MinimumDamage = deal.MinimumDamage }).ToArray());
                 response.StatusCode = StatusCode.Ok;
             }
             catch (NoTradsAvailbleException)

@@ -11,7 +11,7 @@ namespace MonsterTradingCardsGame.SWE1.MessageServer.Models.Card
     {
         public new ElementType ElementType { get; set; }
 
-        public SpellCard(Card_Type name, double damage, ElementType elementType, Guid card_id) : base(name, damage, card_id, elementType)
+        public SpellCard(Card_Type name, double damage, ElementType elementType, Guid card_id) : base(name, damage, card_id)
         {
             ElementType = elementType;
         }

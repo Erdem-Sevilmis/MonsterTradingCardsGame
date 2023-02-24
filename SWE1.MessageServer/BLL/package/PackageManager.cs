@@ -12,9 +12,9 @@ namespace SWE1.MessageServer.BLL.package
     internal class PackageManager : IPackageManager
     {
         private DatabasePackageDao DatabasePackageDao = new DatabasePackageDao();
-        public void AcquireNewPackage(User identity)
+        public List<Card> AcquireNewPackage(User identity)
         {
-            DatabasePackageDao.AddPackageToPlayer(identity);
+           return DatabasePackageDao.AddPackageToPlayer(identity);
         }
         
         public void NewPackage(User identity, Card[] cardIds)

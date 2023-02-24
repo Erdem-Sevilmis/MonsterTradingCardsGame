@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using Newtonsoft.Json;
 using SWE1.MessageServer.BLL.game;
 using SWE1.MessageServer.Core.Response;
 
@@ -21,12 +22,7 @@ namespace SWE1.MessageServer.API.RouteCommands.game
             try
             {
                 var stats = gameManager.GetScoreboard(this.Identity);
-                string message = String.Empty;
-                for (int i = 0; i < stats.Count; i++)
-                {
-                    message += (i + 1) + ":\n" + stats[i].ToString() + "\n";
-                }
-                response.Payload = message;
+                response.Payload = JsonConvert.SerializeObject(stats.Select(stat => new { Name = stat.Name, Elo = stat.Elo, Winns = stat.Wins, Losses = stat.Losses }).ToArray());
                 response.StatusCode = StatusCode.Ok;
             }
             catch (Exception)

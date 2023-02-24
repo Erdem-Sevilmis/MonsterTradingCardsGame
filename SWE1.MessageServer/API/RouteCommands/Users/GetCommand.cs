@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using Newtonsoft.Json;
 using SWE1.MessageServer.BLL.user;
 using SWE1.MessageServer.Core.Response;
 using SWE1.MessageServer.Core.Routing;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SWE1.MessageServer.API.RouteCommands.Users
 {
@@ -44,13 +46,12 @@ namespace SWE1.MessageServer.API.RouteCommands.Users
             string message = String.Empty;
             if (userdata.IsEmpty())
             {
-                message = "\t" + "UserData is empty." + "\n";
-                response.Payload = message;
+                response.Payload = JsonConvert.SerializeObject("UserData is empty.");
                 response.StatusCode = StatusCode.NoContent;
                 return response;
 
-            }
-            message = userdata.ToString() + "\n";
+            } 
+            message = JsonConvert.SerializeObject(userdata);
             response.Payload = message;
             response.StatusCode = StatusCode.Ok;
             return response;

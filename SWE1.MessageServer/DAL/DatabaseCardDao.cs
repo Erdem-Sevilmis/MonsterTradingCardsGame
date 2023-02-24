@@ -35,7 +35,7 @@ namespace SWE1.MessageServer.DAL
             }
             return cards;
         }
-        private Card GetCard(Guid card_id)
+        public Card GetCard(Guid card_id)
         {
             using var cmd = new NpgsqlCommand("SELECT * FROM card WHERE card_id=@card_id", connection);
             cmd.Parameters.AddWithValue("@card_id", card_id);
@@ -61,10 +61,12 @@ namespace SWE1.MessageServer.DAL
 
             Console.WriteLine(name.ToString());
             Console.WriteLine(reader["name"].ToString());
+            
             //TODO: FixDATABASE cuz only "fire" is in it
             Enum.TryParse<ElementType>(reader["element"].ToString(), out ElementType element);
-            return new Card(name, damage, id, element);
+            return new Card(name, damage, id);
         }
+        
         public List<Card> GetUserDeck(string username)
         {
             using var cmd = new NpgsqlCommand("SELECT deck FROM user_account WHERE username = @username", connection);

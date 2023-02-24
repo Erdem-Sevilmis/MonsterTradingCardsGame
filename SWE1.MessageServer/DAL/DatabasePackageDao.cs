@@ -56,7 +56,7 @@ namespace SWE1.MessageServer.DAL
                 }
             }
         }
-        public void AddPackageToPlayer(User user)
+        public List<Card> AddPackageToPlayer(User user)
         {
             int package_id;
             List<Guid> cardIds;
@@ -92,6 +92,13 @@ namespace SWE1.MessageServer.DAL
             InsertCardToUserStack(user.Credentials.Username, cardIds.ToArray());
             DeletePackageId(package_id);
             BoughtPackage(user);
+            DatabaseCardDao cardDao = new DatabaseCardDao();
+            List<Card> cards = new List<Card>();
+            foreach (var cardId in cardIds)
+            {
+                cards.Add(cardDao.GetCard(cardId));
+            }
+            return cards;
         }
         private void DeletePackageId(int package_id)
         {

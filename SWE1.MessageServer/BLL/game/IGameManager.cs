@@ -9,6 +9,7 @@ namespace SWE1.MessageServer.BLL.game
 {
     internal interface IGameManager
     {
+        List<string> GetInToBattle(User user);
         List<UserStats> GetScoreboard(User identity);
         UserStats GetStats(User identity);
     }

@@ -11,6 +11,6 @@ namespace SWE1.MessageServer.BLL.package
     internal interface IPackageManager
     {
         void NewPackage(User identity, Card[] cardIds);
-        void AcquireNewPackage(User identity);
+        List<Card> AcquireNewPackage(User identity);
     }
 }

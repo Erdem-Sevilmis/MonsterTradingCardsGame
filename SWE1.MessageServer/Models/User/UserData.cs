@@ -16,7 +16,7 @@
 
         public override string? ToString()
         {
-            return $"\tName: {Name}\n\tBio: {Bio}\n\tImage: {Image}";
+            return $"Name: {Name} Bio: {Bio} Image: {Image}";
         }
     }
 }
