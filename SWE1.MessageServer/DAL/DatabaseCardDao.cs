@@ -89,6 +89,7 @@ namespace SWE1.MessageServer.DAL
             }
             return cards;
         }
+        
         public List<Guid> GetUserStack(string username)
         {
             using var cmd = new NpgsqlCommand("SELECT stack FROM user_account WHERE username = @username", connection);
