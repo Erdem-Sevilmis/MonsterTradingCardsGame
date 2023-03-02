@@ -110,34 +110,42 @@ namespace SWE1.MessageServer.BLL.game
                      * not effective: damage halfed (fire vs water)
                      * no effect: (normal vs normal, water vs water, etc.)
                      */
-                    //cases dont cover not effective and no effect 
+
                     switch ((user_card.ElementType, otherUser_card.ElementType))
                     {
                         case (ElementType.Water, ElementType.Fire):
-                            // code for Water vs Fire
-                            HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2} vs {otherUser_card.Damage}");
+                            HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2} vs {otherUser_card.Damage/2}");
                             HandleCardSwap(otherUser_card);
                             break;
                         case (ElementType.Fire, ElementType.Normal):
-                            // code for Fire vs Normal
+                            HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2} vs {otherUser_card.Damage/2}");
+                            HandleCardSwap(otherUser_card);
                             break;
                         case (ElementType.Normal, ElementType.Water):
-                            // code for Normal vs Water
+                            HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2} vs {otherUser_card.Damage/2}");
+                            HandleCardSwap(otherUser_card);
+                            break;
+                        case (ElementType.Water, ElementType.Water):
+                            CompareDamage(user, otherUser, user_card, otherUser_card);
+                            break;
+                        case (ElementType.Fire, ElementType.Fire):
+                            CompareDamage(user, otherUser, user_card, otherUser_card);
+                            break;
+                        case (ElementType.Normal, ElementType.Normal):
+                            CompareDamage(user, otherUser, user_card, otherUser_card);
+                            break;
+                            // prob with handlelog bec. of damage calculation
+                            // i always provide the winner so no efeective doenst exist for me only effectiv
+                        case (ElementType.Water, ElementType.Normal):
+                            // Handle Water vs Normal
                             break;
                         case (ElementType.Fire, ElementType.Water):
-                            // code for Fire vs Water
+                            // Handle Fire vs Water
                             break;
                         case (ElementType.Normal, ElementType.Fire):
-                            // code for Normal vs Fire
-                            break;
-                        case (ElementType.Water, ElementType.Normal):
-                            // code for Water vs Normal
-                            break;
-                        default:
-                            // code to handle any other cases
+                            // Handle Normal vs Fire
                             break;
                     }
-
                 }
                 else
                 {
@@ -191,22 +199,7 @@ namespace SWE1.MessageServer.BLL.game
                         continue;
                     }
 
-                    switch (user_card.Damage.CompareTo(otherUser_card.Damage))
-                    {
-                        case 1:
-                            HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage} vs {otherUser_card.Damage}");
-                            HandleCardSwap(otherUser_card);
-                            break;
-                        case -1:
-                            HandleLog(otherUser, user, otherUser_card, user_card, false, $"{user_card.Damage} vs {otherUser_card.Damage}");
-                            HandleCardSwap(user_card);
-                            //other user won
-                            break;
-                        default:
-                            //draw
-                            HandleLog(user, otherUser, user_card, otherUser_card, true, $"{user_card.Damage} vs {otherUser_card.Damage}");
-                            break;
-                    }
+                    CompareDamage(user, otherUser, user_card, otherUser_card);
                 }
 
             }
@@ -217,6 +210,26 @@ namespace SWE1.MessageServer.BLL.game
              */
 
             log.TryAdd(otherUser.Credentials.Username, battlelogs);
+        }
+
+        private void CompareDamage(User user, User otherUser, Card user_card, Card otherUser_card)
+        {
+            switch (user_card.Damage.CompareTo(otherUser_card.Damage))
+            {
+                case 1:
+                    HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage} vs {otherUser_card.Damage}");
+                    HandleCardSwap(otherUser_card);
+                    break;
+                case -1:
+                    HandleLog(otherUser, user, otherUser_card, user_card, false, $"{user_card.Damage} vs {otherUser_card.Damage}");
+                    HandleCardSwap(user_card);
+                    //other user won
+                    break;
+                default:
+                    //draw
+                    HandleLog(user, otherUser, user_card, otherUser_card, true, $"{user_card.Damage} vs {otherUser_card.Damage}");
+                    break;
+            }
         }
 
         private void HandleCardSwap(Card looser_card)
