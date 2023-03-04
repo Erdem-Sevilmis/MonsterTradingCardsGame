@@ -3,7 +3,7 @@
 namespace SWE1.MessageServer.API.RouteCommands.trading
 {
     [Serializable]
-    internal class CardNotFoundException : Exception
+    public class CardNotFoundException : Exception
     {
         public CardNotFoundException()
         {

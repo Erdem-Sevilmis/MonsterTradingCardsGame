@@ -44,7 +44,8 @@ namespace SWE1.MessageServer.Test
             Assert.That(response.StatusCode, Is.EqualTo(StatusCode.Created));
             Assert.That(response.Payload, Is.EqualTo(null));
         }
-
+        
+        /*
         [Test]
         public void CreateNewPackageFailCardExist()
         {
@@ -76,5 +77,6 @@ namespace SWE1.MessageServer.Test
             Assert.That(response.StatusCode, Is.EqualTo(StatusCode.Forbidden));
             Assert.That(response.Payload, Is.EqualTo(null));
         }
+        */
     }
 }

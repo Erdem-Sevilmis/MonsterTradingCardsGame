@@ -3,7 +3,7 @@
 namespace SWE1.MessageServer.API.RouteCommands.trading
 {
     [Serializable]
-    internal class CardNotOwnedOrInDeckException : Exception
+    public class CardNotOwnedOrInDeckException : Exception
     {
         public CardNotOwnedOrInDeckException()
         {

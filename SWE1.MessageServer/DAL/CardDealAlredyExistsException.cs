@@ -3,7 +3,7 @@
 namespace SWE1.MessageServer.DAL
 {
     [Serializable]
-    internal class CardDealAlredyExistsException : Exception
+    public class CardDealAlredyExistsException : Exception
     {
         public CardDealAlredyExistsException()
         {

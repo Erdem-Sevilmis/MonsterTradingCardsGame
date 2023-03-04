@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.trading
 {
-    internal class GetAllTradingDealsCommand : AuthenticatedRouteCommand
+    public class GetAllTradingDealsCommand : AuthenticatedRouteCommand
     {
 
         private readonly ITradingManager _tradingManager;

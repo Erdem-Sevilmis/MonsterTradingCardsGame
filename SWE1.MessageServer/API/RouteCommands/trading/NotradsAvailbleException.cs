@@ -3,7 +3,7 @@
 namespace SWE1.MessageServer.API.RouteCommands.trading
 {
     [Serializable]
-    internal class NoTradsAvailbleException : Exception
+    public class NoTradsAvailbleException : Exception
     {
         public NoTradsAvailbleException()
         {
