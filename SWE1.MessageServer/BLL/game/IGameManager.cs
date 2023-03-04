@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.game
 {
-    internal interface IGameManager
+    public interface IGameManager
     {
         List<string> GetInToBattle(User user);
         List<UserStats> GetScoreboard(User identity);

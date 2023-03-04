@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.trading
 {
-    internal class TradingManager : ITradingManager
+    public class TradingManager : ITradingManager
     {
         DataBaseTradingDao dataBaseTradingDao = new DataBaseTradingDao();
         public bool AcceptTradingDeal(Credentials credentials, Guid cardId, TradingDeal tradingDeal) => dataBaseTradingDao.Trade(credentials.Username, cardId, tradingDeal.CardToTrade);

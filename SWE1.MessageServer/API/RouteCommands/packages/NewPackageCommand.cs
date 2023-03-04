@@ -13,16 +13,16 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.packages
 {
-    internal class NewPackageCommand : AuthenticatedRouteCommand
+    public class NewPackageCommand : AuthenticatedRouteCommand
     {
         private readonly IPackageManager _packageManager;
-        private readonly Card[] cardIds;
+        private readonly Card[] cards;
         private readonly User identity;
 
-        public NewPackageCommand(User identity, IPackageManager packageManager, Card[] cardIds) : base(identity)
+        public NewPackageCommand(User identity, IPackageManager packageManager, Card[] cards) : base(identity)
         {
             _packageManager = packageManager;
-            this.cardIds = cardIds;
+            this.cards = cards;
             this.identity = identity;
         }
 
@@ -38,7 +38,7 @@ namespace SWE1.MessageServer.API.RouteCommands.packages
             
             try
             {
-                _packageManager.NewPackage(this.Identity, cardIds);
+                _packageManager.NewPackage(this.Identity, cards);
                 response.StatusCode = StatusCode.Created;
             }
             catch (AtLeastOneCardInThePackageAlreadyExistsException)

@@ -7,7 +7,7 @@ using System.Security.Principal;
 
 namespace SWE1.MessageServer.API.RouteCommands.game
 {
-    internal class GetStatsCommand : AuthenticatedRouteCommand
+    public class GetStatsCommand : AuthenticatedRouteCommand
     {
         private User identity;
         private IGameManager gameManager;

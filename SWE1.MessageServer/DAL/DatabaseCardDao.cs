@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.DAL
 {
-    internal class DatabaseCardDao
+    public class DatabaseCardDao
     {
         private NpgsqlConnection connection;
 
@@ -28,7 +28,11 @@ namespace SWE1.MessageServer.DAL
         {
             List<Card> cards = new List<Card>();
 
-            var allcardIds = Enumerable.Concat(GetUserStack(username), GetUserDeck(username).Select((card) => card.Id));
+            var allcardIds = Enumerable.Concat(GetUserStack(username), GetUserDeck(username).Select((card) => card.Id)).ToList();
+
+            if (allcardIds.Count == 0)
+                throw new NoCardsException();
+            
             foreach (var cardId in allcardIds)
             {
                 cards.Add(GetCard(cardId));

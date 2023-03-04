@@ -3,7 +3,7 @@
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
     [Serializable]
-    internal class NoCardsException : Exception
+    public class NoCardsException : Exception
     {
         public NoCardsException()
         {

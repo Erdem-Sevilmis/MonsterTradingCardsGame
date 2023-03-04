@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.cards
 {
-    internal class CardsManager : ICardsManager
+    public class CardsManager : ICardsManager
     {
         private DatabaseCardDao DatabaseCardDao = new DatabaseCardDao();
         public bool ConfigureNewDeck(User identity, Guid[] cardIds)

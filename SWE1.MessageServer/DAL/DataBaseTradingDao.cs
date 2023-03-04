@@ -12,7 +12,7 @@ using static SWE1.MessageServer.Models.TradingDeal;
 
 namespace SWE1.MessageServer.DAL
 {
-    internal class DataBaseTradingDao
+    public class DataBaseTradingDao
     {
         private NpgsqlConnection connection;
         public DataBaseTradingDao()

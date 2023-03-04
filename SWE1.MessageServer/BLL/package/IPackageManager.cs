@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.package
 {
-    internal interface IPackageManager
+    public interface IPackageManager
     {
         void NewPackage(User identity, Card[] cardIds);
         List<Card> AcquireNewPackage(User identity);

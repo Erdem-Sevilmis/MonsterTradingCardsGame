@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.packages
 {
-    internal class BuyPackageCommand : AuthenticatedRouteCommand
+    public class BuyPackageCommand : AuthenticatedRouteCommand
     {
         private readonly IPackageManager _packageManager;
         private readonly User identity;

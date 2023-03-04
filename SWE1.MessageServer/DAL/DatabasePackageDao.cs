@@ -13,7 +13,7 @@ using static MonsterTradingCardsGame.DataBase;
 
 namespace SWE1.MessageServer.DAL
 {
-    internal class DatabasePackageDao
+    public class DatabasePackageDao
     {
         private const string CreateNewCardPackage = "INSERT INTO card_package (package_id, card_id) VALUES (@package_id, @card_id_1),(@package_id, @card_id_2),(@package_id, @card_id_3),(@package_id, @card_id_4),(@package_id, @card_id_5)";
         private const string CreateNewPackage = "INSERT INTO package default values returning id";

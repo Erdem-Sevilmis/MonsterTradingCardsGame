@@ -3,7 +3,7 @@
 namespace SWE1.MessageServer.API.RouteCommands.packages
 {
     [Serializable]
-    internal class AtLeastOneCardInThePackageAlreadyExistsException : Exception
+    public class AtLeastOneCardInThePackageAlreadyExistsException : Exception
     {
         public AtLeastOneCardInThePackageAlreadyExistsException()
         {

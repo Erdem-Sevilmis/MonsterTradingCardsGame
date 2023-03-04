@@ -5,7 +5,7 @@ using SWE1.MessageServer.Core.Routing;
 
 namespace SWE1.MessageServer.API.RouteCommands.Users
 {
-    internal class RegisterCommand : IRouteCommand
+    public class RegisterCommand : IRouteCommand
     {
         private readonly Credentials _credentials;
         private readonly IUserManager _userManager;

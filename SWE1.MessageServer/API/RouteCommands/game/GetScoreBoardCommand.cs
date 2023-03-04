@@ -5,12 +5,12 @@ using SWE1.MessageServer.Core.Response;
 
 namespace SWE1.MessageServer.API.RouteCommands.game
 {
-    internal class GetScoreBoard : AuthenticatedRouteCommand
+    public class GetScoreBoardCommand : AuthenticatedRouteCommand
     {
         private User identity;
         private IGameManager gameManager;
 
-        public GetScoreBoard(User identity, IGameManager gameManager) : base(identity)
+        public GetScoreBoardCommand(User identity, IGameManager gameManager) : base(identity)
         {
             this.identity = identity;
             this.gameManager = gameManager;

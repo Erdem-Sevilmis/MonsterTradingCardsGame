@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.cards
 {
-    internal interface ICardsManager
+    public interface ICardsManager
     {
         List<Card> GetUserCards(User identity);
         List<Card> GetUserDeck(User identity);

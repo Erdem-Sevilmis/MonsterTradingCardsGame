@@ -3,7 +3,7 @@
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
     [Serializable]
-    internal class CardNotOwnedOrUnavailableException : Exception
+    public class CardNotOwnedOrUnavailableException : Exception
     {
         public CardNotOwnedOrUnavailableException()
         {

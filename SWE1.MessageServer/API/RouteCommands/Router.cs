@@ -79,7 +79,7 @@ namespace SWE1.MessageServer.API.RouteCommands
 
                 //game
                 { Method: HttpMethod.Get, ResourcePath: "/stats" } => new GetStatsCommand(identity(request), _gameManager),
-                { Method: HttpMethod.Get, ResourcePath: "/score" } => new GetScoreBoard(identity(request), _gameManager),
+                { Method: HttpMethod.Get, ResourcePath: "/score" } => new GetScoreBoardCommand(identity(request), _gameManager),
                 { Method: HttpMethod.Post, ResourcePath: "/battles" } => new BattleCommand(identity(request), _gameManager),
 
 

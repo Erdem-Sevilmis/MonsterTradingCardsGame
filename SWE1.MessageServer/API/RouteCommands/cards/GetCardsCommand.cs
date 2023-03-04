@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
-    internal class GetCardsCommand : AuthenticatedRouteCommand
+    public class GetCardsCommand : AuthenticatedRouteCommand
     {
         private readonly ICardsManager _cardsManager;
 

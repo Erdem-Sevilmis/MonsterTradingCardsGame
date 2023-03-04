@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.user
 {
-    internal interface IUserManager
+    public interface IUserManager
     {
         User LoginUser(Credentials credentials);
         void RegisterUser(Credentials credentials);

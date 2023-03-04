@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.trading
 {
-    internal interface ITradingManager
+    public interface ITradingManager
     {
         bool CreateNewTradingDeal(Credentials credentials, TradingDeal tradingdeal);
         List<TradingDeal> GetTradingDeals(Credentials credentials);

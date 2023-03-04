@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.package
 {
-    internal class PackageManager : IPackageManager
+    public class PackageManager : IPackageManager
     {
         private DatabasePackageDao DatabasePackageDao = new DatabasePackageDao();
         public List<Card> AcquireNewPackage(User identity)

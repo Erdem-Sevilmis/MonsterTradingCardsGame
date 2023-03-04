@@ -3,7 +3,7 @@
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
     [Serializable]
-    internal class DeckEmptyException : Exception
+    public class DeckEmptyException : Exception
     {
         public DeckEmptyException()
         {

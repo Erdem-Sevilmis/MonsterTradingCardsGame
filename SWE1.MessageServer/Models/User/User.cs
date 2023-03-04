@@ -23,7 +23,8 @@ namespace MonsterTradingCardsGame.SWE1.MessageServer.Models.User
         }
         public override string? ToString()
         {
-            return UserData.ToString();
+            return UserData == null ? "" : UserData.ToString();
         }
+
     }
 }

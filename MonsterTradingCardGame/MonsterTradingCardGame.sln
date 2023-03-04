@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWE1.MessageServer", "..\SW
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWE1.MessageServer.Core", "..\SWE1.MessageServer.Core\SWE1.MessageServer.Core.csproj", "{0FE4310B-1A1F-4F13-A322-A86D5ECF80E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWE1.MessageServer.Test", "..\SWE1.MessageServer.Test\SWE1.MessageServer.Test.csproj", "{B7ACDD90-A6C6-4A23-A489-B242658788D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWE1.MessageServer.Test", "..\SWE1.MessageServer.Test\SWE1.MessageServer.Test.csproj", "{6C0C45BA-F88A-497F-AB59-A084AEE75493}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{0FE4310B-1A1F-4F13-A322-A86D5ECF80E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FE4310B-1A1F-4F13-A322-A86D5ECF80E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FE4310B-1A1F-4F13-A322-A86D5ECF80E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B7ACDD90-A6C6-4A23-A489-B242658788D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B7ACDD90-A6C6-4A23-A489-B242658788D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B7ACDD90-A6C6-4A23-A489-B242658788D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B7ACDD90-A6C6-4A23-A489-B242658788D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C0C45BA-F88A-497F-AB59-A084AEE75493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C0C45BA-F88A-497F-AB59-A084AEE75493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C0C45BA-F88A-497F-AB59-A084AEE75493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C0C45BA-F88A-497F-AB59-A084AEE75493}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

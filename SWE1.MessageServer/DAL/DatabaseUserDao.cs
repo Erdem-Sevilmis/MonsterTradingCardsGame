@@ -14,7 +14,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace SWE1.MessageServer.DAL
 {
-    internal class DatabaseUserDao : IUserDao
+    public class DatabaseUserDao : IUserDao
     {
         private const string InsertUserCommand = "INSERT INTO user_account(username, password, coins) VALUES(@username, @password, @coins)";
         private const string UpdateUserCommand = "UPDATE user_account SET username = @new_username, password = @new_password WHERE username = @old_username";

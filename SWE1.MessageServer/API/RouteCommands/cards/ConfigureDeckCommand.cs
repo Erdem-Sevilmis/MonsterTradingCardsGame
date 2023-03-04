@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
-    internal class ConfigureDeckCommand : AuthenticatedRouteCommand
+    public class ConfigureDeckCommand : AuthenticatedRouteCommand
     {
         private readonly ICardsManager _cardsManager;
         private readonly Guid[] cardIds;

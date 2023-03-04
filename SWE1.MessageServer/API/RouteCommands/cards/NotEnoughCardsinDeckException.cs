@@ -3,7 +3,7 @@
 namespace SWE1.MessageServer.API.RouteCommands.cards
 {
     [Serializable]
-    internal class NotEnoughCardsinDeckException : Exception
+    public class NotEnoughCardsinDeckException : Exception
     {
         public NotEnoughCardsinDeckException()
         {

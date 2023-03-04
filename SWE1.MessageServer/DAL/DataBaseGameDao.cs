@@ -8,13 +8,9 @@ using System.Net.NetworkInformation;
 
 namespace SWE1.MessageServer.DAL
 {
-    internal class DataBaseGameDao
+    public class DataBaseGameDao
     {
         private NpgsqlConnection connection;
-        private User user1;
-        private User user2;
-        private static object lockObj = new object();
-        private readonly List<string> battleLog;
 
         public DataBaseGameDao()
         {
@@ -34,7 +30,6 @@ namespace SWE1.MessageServer.DAL
             int wins = (int)reader["wins"];
             int losses = (int)reader["losses"];
             return new UserStats(name, elo, wins, losses);
-
         }
 
         internal List<UserStats> GetScoreBoard(User identity)

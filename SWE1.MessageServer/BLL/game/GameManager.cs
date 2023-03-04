@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SWE1.MessageServer.BLL.game
 {
-    internal class GameManager : IGameManager
+    public class GameManager : IGameManager
     {
         DataBaseGameDao dataBaseGameDao = new DataBaseGameDao();
         DatabaseCardDao databaseCardDao = new DatabaseCardDao();
@@ -147,7 +147,7 @@ namespace SWE1.MessageServer.BLL.game
                             break;
                     }
                 }
-                else
+                else  
                 {
                     //Checking for specialties
                     bool isUserDragon = user_card.Name.Equals(DataBase.Card_Type.Dragon);
@@ -280,6 +280,5 @@ namespace SWE1.MessageServer.BLL.game
         {
             return dataBaseGameDao.GetStats(identity);
         }
-
     }
 }
