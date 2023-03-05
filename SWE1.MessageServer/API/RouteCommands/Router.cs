@@ -86,13 +86,19 @@ namespace SWE1.MessageServer.API.RouteCommands
                 //tradings
                 { Method: HttpMethod.Get, ResourcePath: "/tradings" } => new GetAllTradingDealsCommand(identity(request), _tradingManager),
                 { Method: HttpMethod.Post, ResourcePath: "/tradings" } => new CreateTradingDealCommand(identity(request), _tradingManager, Deserialize<TradingDeal>(request.Payload)),
-                { Method: HttpMethod.Post, ResourcePath: var path } when isMatchTradingdealId(path) => new CarryOutTradeCommand(identity(request), _tradingManager, Guid.Parse(parseTradingdealId(path)), Deserialize<TradingDeal>(request.Payload)),
+                { Method: HttpMethod.Post, ResourcePath: var path } when isMatchTradingdealId(path) => new CarryOutTradeCommand(identity(request), _tradingManager, Guid.Parse(parseTradingdealId(path)), Guid.Parse(CleanParamter(request.Payload))),
                 { Method: HttpMethod.Delete, ResourcePath: var path } when isMatchTradingdealId(path) => new DeleteTradingdealCommand(identity(request), _tradingManager, Guid.Parse(parseTradingdealId(path))),
 
                 _ => null
             };
 
             return command;
+        }
+
+        private ReadOnlySpan<char> CleanParamter(string? payload)
+        {
+            var sa = payload.Substring(1, payload.Length - 2);
+            return sa;
         }
 
         private string EnsureBody(string? body)

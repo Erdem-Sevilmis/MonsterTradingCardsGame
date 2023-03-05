@@ -13,6 +13,6 @@ namespace SWE1.MessageServer.BLL.trading
         bool CreateNewTradingDeal(Credentials credentials, TradingDeal tradingdeal);
         List<TradingDeal> GetTradingDeals(Credentials credentials);
         bool DeleteTradingDeal(Credentials credentials, Guid cardid);
-        bool AcceptTradingDeal(Credentials credentials, Guid cardId, TradingDeal tradingDeal);
+        bool AcceptTradingDeal(Credentials credentials, Guid cardId, Guid tradeID);
     }
 }

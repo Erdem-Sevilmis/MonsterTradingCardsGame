@@ -12,7 +12,7 @@ namespace SWE1.MessageServer.BLL.trading
     public class TradingManager : ITradingManager
     {
         DataBaseTradingDao dataBaseTradingDao = new DataBaseTradingDao();
-        public bool AcceptTradingDeal(Credentials credentials, Guid cardId, TradingDeal tradingDeal) => dataBaseTradingDao.Trade(credentials.Username, cardId, tradingDeal.CardToTrade);
+        public bool AcceptTradingDeal(Credentials credentials, Guid cardId, Guid tradeID) => dataBaseTradingDao.Trade(credentials.Username, cardId, tradeID);
 
         public bool CreateNewTradingDeal(Credentials credentials, TradingDeal tradingdeal) => dataBaseTradingDao.CreateNewTradingDeal(credentials.Username, tradingdeal);
 

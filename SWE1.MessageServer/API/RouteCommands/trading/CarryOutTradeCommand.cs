@@ -16,13 +16,13 @@ namespace SWE1.MessageServer.API.RouteCommands.trading
     public class CarryOutTradeCommand : AuthenticatedRouteCommand
     {
         private readonly ITradingManager _tradingManager;
-        private readonly Guid cardId;
-        private readonly TradingDeal tradingDeal;
-        public CarryOutTradeCommand(User identity, ITradingManager tradingManager, Guid cardId,TradingDeal tradingDeal) : base(identity)
+        private readonly Guid tradeID;
+        private readonly Guid cardID;
+        public CarryOutTradeCommand(User identity, ITradingManager tradingManager, Guid tradeID, Guid cardID) : base(identity)
         {
             _tradingManager = tradingManager;
-            this.cardId = cardId;
-            this.tradingDeal = tradingDeal;
+            this.tradeID = tradeID;
+            this.cardID = cardID;
         }
 
         public override Response Execute()
@@ -30,7 +30,7 @@ namespace SWE1.MessageServer.API.RouteCommands.trading
             var response = new Response();
             try
             {
-                _tradingManager.AcceptTradingDeal(this.Identity.Credentials, cardId, tradingDeal);
+                _tradingManager.AcceptTradingDeal(this.Identity.Credentials, cardID, tradeID);
                 response.StatusCode = StatusCode.Ok;
             }
             catch (CardNotOwnedOrRequirementsNotMetException)

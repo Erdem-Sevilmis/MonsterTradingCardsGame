@@ -51,5 +51,18 @@ namespace SWE1.MessageServer.DAL
             scoreboard.Sort((x, y) => y.Elo.CompareTo(x.Elo));
             return scoreboard;
         }
+
+        internal void UpdateStats(User user, bool won)
+        {
+            string query = String.Empty;
+            if (won)
+                query = "UPDATE stats SET elo = elo+5, wins = wins+1 WHERE name = @name";
+            else
+                query = "UPDATE stats SET elo = elo-5, losses = losses+1 WHERE name = @name";
+
+            using var cmd = new NpgsqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@name", user.Credentials.Username);
+            cmd.ExecuteNonQuery();
+        }
     }
 }

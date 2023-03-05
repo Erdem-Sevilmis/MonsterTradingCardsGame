@@ -1,6 +1,7 @@
 ﻿using MonsterTradingCardsGame;
 using MonsterTradingCardsGame.SWE1.MessageServer.Models.Card;
 using MonsterTradingCardsGame.SWE1.MessageServer.Models.User;
+using Npgsql;
 using SWE1.MessageServer.DAL;
 using System;
 using System.Collections;
@@ -25,7 +26,8 @@ namespace SWE1.MessageServer.BLL.game
         List<Card> user_deck;
         List<Card> otherUser_deck;
         static Random rnd = new Random();
-        int roundCount = 0;
+        int roundCount = 1;
+
         public List<string> GetInToBattle(User user)
         {
             User otherUser = null;
@@ -53,10 +55,10 @@ namespace SWE1.MessageServer.BLL.game
         {
             user_deck = databaseCardDao.GetUserDeck(user.Credentials.Username);
             otherUser_deck = databaseCardDao.GetUserDeck(otherUser.Credentials.Username);
-
-            //When one has no cards exit game loop.
-            while (user_deck.Count > 0 && otherUser_deck.Count > 0 && roundCount < 100)
+            battlelogs.Add("\n");
+            while (user_deck.Count > 0 && otherUser_deck.Count > 0 && roundCount < 101)
             {
+                battlelogs.Add($"\nRound #{roundCount}: ");
                 var user_card = user_deck.ElementAt(rnd.Next(0, user_deck.Count));
                 var otherUser_card = otherUser_deck.ElementAt(rnd.Next(0, otherUser_deck.Count));
 
@@ -96,58 +98,9 @@ namespace SWE1.MessageServer.BLL.game
                         continue;
                     }
 
-                    //spell and monster
-
-
-
-                    //spell only
-                    /*
-                     * Water kills fire
-                     * Fire kills normal
-                     * Normal kill water
-                     * 
-                     * effective: damage double (water vs fire)
-                     * not effective: damage halfed (fire vs water)
-                     * no effect: (normal vs normal, water vs water, etc.)
-                     */
-
-                    switch ((user_card.ElementType, otherUser_card.ElementType))
-                    {
-                        case (ElementType.Water, ElementType.Fire):
-                            HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2} vs {otherUser_card.Damage/2}");
-                            HandleCardSwap(otherUser_card);
-                            break;
-                        case (ElementType.Fire, ElementType.Normal):
-                            HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2} vs {otherUser_card.Damage/2}");
-                            HandleCardSwap(otherUser_card);
-                            break;
-                        case (ElementType.Normal, ElementType.Water):
-                            HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2} vs {otherUser_card.Damage/2}");
-                            HandleCardSwap(otherUser_card);
-                            break;
-                        case (ElementType.Water, ElementType.Water):
-                            CompareDamage(user, otherUser, user_card, otherUser_card);
-                            break;
-                        case (ElementType.Fire, ElementType.Fire):
-                            CompareDamage(user, otherUser, user_card, otherUser_card);
-                            break;
-                        case (ElementType.Normal, ElementType.Normal):
-                            CompareDamage(user, otherUser, user_card, otherUser_card);
-                            break;
-                            // prob with handlelog bec. of damage calculation
-                            // i always provide the winner so no efeective doenst exist for me only effectiv
-                        case (ElementType.Water, ElementType.Normal):
-                            // Handle Water vs Normal
-                            break;
-                        case (ElementType.Fire, ElementType.Water):
-                            // Handle Fire vs Water
-                            break;
-                        case (ElementType.Normal, ElementType.Fire):
-                            // Handle Normal vs Fire
-                            break;
-                    }
+                    CardVsCard(user, otherUser, user_card, otherUser_card);
                 }
-                else  
+                else
                 {
                     //Checking for specialties
                     bool isUserDragon = user_card.Name.Equals(DataBase.Card_Type.Dragon);
@@ -198,18 +151,79 @@ namespace SWE1.MessageServer.BLL.game
                         HandleCardSwap(user_card);
                         continue;
                     }
-
                     CompareDamage(user, otherUser, user_card, otherUser_card);
                 }
-
             }
 
-            /*
-             * updates stats
-             * update elo 
-             */
-
+            battlelogs.Add($"\n");
+            if (roundCount >= 100)
+            {
+                battlelogs.Add($"{user.Credentials.Username} vs {otherUser.Credentials.Username} ended in a Draw.\n");
+            }
+            else if (otherUser_deck.Count == 0)
+            {
+                UpdateStats(user, true);
+                UpdateStats(otherUser, false);
+                battlelogs.Add($"{user.Credentials.Username} has Won.\n");
+            }
+            else
+            {
+                UpdateStats(user, false);
+                UpdateStats(otherUser, true);
+                battlelogs.Add($"{otherUser.Credentials.Username} has Won.\n");
+            }
             log.TryAdd(otherUser.Credentials.Username, battlelogs);
+            return;
+        }
+
+        private void UpdateStats(User user, bool won)
+        {
+            DataBaseGameDao userDao = new DataBaseGameDao();
+            userDao.UpdateStats(user, won);
+        }
+
+        private void CardVsCard(User user, User otherUser, Card user_card, Card otherUser_card)
+        {
+            switch ((user_card.ElementType, otherUser_card.ElementType))
+            {
+                case (ElementType.Water, ElementType.Fire):
+                    HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2}vs{otherUser_card.Damage / 2}");
+                    HandleCardSwap(otherUser_card);
+                    break;
+                case (ElementType.Fire, ElementType.Normal):
+                    HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2}vs{otherUser_card.Damage / 2}");
+                    HandleCardSwap(otherUser_card);
+                    break;
+                case (ElementType.Normal, ElementType.Water):
+                    HandleLog(user, otherUser, user_card, otherUser_card, false, $"{user_card.Damage * 2}vs{otherUser_card.Damage / 2}");
+                    HandleCardSwap(otherUser_card);
+                    break;
+                case (ElementType.Water, ElementType.Water):
+                    CompareDamage(user, otherUser, user_card, otherUser_card);
+                    break;
+                case (ElementType.Fire, ElementType.Fire):
+                    CompareDamage(user, otherUser, user_card, otherUser_card);
+                    break;
+                case (ElementType.Normal, ElementType.Normal):
+                    CompareDamage(user, otherUser, user_card, otherUser_card);
+                    break;
+                default:
+                    CardVsCard(otherUser, user, otherUser_card, user_card);
+                    break;
+            }
+        }
+
+        private bool UniqueFeature()
+        {
+            //3% chance for event to trigger
+            if (rnd.Next(0, 101) >= 2)
+                return false;
+            //50/50 coinfip 
+            if (rnd.Next(0, 101) <= 50)
+                return false;
+
+            battlelogs.Add($"**SPECIAL EVENT TRIGGER** looser keeps card!");
+            return true;
         }
 
         private void CompareDamage(User user, User otherUser, Card user_card, Card otherUser_card)
@@ -234,6 +248,9 @@ namespace SWE1.MessageServer.BLL.game
 
         private void HandleCardSwap(Card looser_card)
         {
+            if (UniqueFeature())
+                return;
+
             foreach (var card in user_deck)
             {
                 if (card.Id.Equals(looser_card.Id))
@@ -260,15 +277,15 @@ namespace SWE1.MessageServer.BLL.game
             roundCount++;
             if (draw)
             {
-                battlelogs.Add($"{LogBuilder(winner, winner_Card)} vs {LogBuilder(looser, looser_Card)} => {winner_Card.Damage} vs {looser_Card.Damage} -> {realDmg} => Draw");
+                battlelogs.Add($"{LogBuilder(winner, winner_Card)} vs {LogBuilder(looser, looser_Card)} => {winner_Card.Damage}vs{looser_Card.Damage} -> {realDmg} => Draw");
                 return;
             }
-            battlelogs.Add($"{LogBuilder(winner, winner_Card)} vs {LogBuilder(looser, looser_Card)} => {winner_Card.Damage} vs {looser_Card.Damage} -> {realDmg} => {winner_Card.Name} wins");
+            battlelogs.Add($"{LogBuilder(winner, winner_Card)} vs {LogBuilder(looser, looser_Card)} => {winner_Card.Damage}vs{looser_Card.Damage} -> {realDmg} => {winner_Card.Name} wins");
         }
 
         private string LogBuilder(User user, Card user_Card)
         {
-            return $"{user.Credentials.Username}: {user_Card} ({user_Card.Damage}";
+            return $"{user.Credentials.Username}: {user_Card.Name} ({user_Card.Damage} Damage)";
         }
 
         public List<UserStats> GetScoreboard(User identity)

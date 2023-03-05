@@ -55,11 +55,10 @@ namespace SWE1.MessageServer.DAL
                 try
                 {
                     cmd.ExecuteNonQuery();
-
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("wadehell");
+                    
                 }
                 return true;
             }
@@ -74,6 +73,9 @@ namespace SWE1.MessageServer.DAL
 
                 while (reader.Read())
                 {
+                    if (reader["username"].ToString() == username)
+                        continue;
+
                     SpellMonster name;
                     Enum.TryParse(reader["type"].ToString(), out name);
                     availableTrades.Add(new TradingDeal((Guid)reader["id"], (Guid)reader["cardid"], name, int.Parse(reader["minimum_damage"].ToString())));
@@ -101,7 +103,7 @@ namespace SWE1.MessageServer.DAL
                     cardID = (Guid)reader["cardid"];
                 }
             }
-            
+
             DatabaseCardDao cardDao = new DatabaseCardDao();
             var cards = cardDao.GetUserCards(username);
 
@@ -116,83 +118,79 @@ namespace SWE1.MessageServer.DAL
             }
         }
 
-        public bool Trade(string username, Guid cardId, Guid otherCardId)
+        TradingDeal tradingdeal;
+        public bool Trade(string username, Guid otherCardId, Guid tradeID)
         {
             string otherUsername = String.Empty;
             using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where id=@id", connection))
             {
                 // Add the parameter and its value
-                cmd.Parameters.AddWithValue("@id", cardId);
+                cmd.Parameters.AddWithValue("@id", tradeID);
                 // Execute the update statement
                 using var reader = cmd.ExecuteReader();
                 if (!reader.HasRows)
                     throw new CardNotFoundException();
+                if (reader.Read())
+                {
+                    tradingdeal = new TradingDeal(tradeID, (Guid)reader["cardid"], Enum.Parse<SpellMonster>(reader["type"].ToString()), int.Parse(reader["minimum_damage"].ToString()));
+                    otherUsername = reader["username"].ToString();
+                }
             }
+             if (username == otherUsername)
+                throw new CardNotOwnedOrRequirementsNotMetException();
+
+             
             DatabaseCardDao cardDao = new DatabaseCardDao();
             var cards = cardDao.GetUserCards(username);
-            if (cards.Any(e => e.Id == cardId))
+            if (cards.Any(e => e.Id == otherCardId))
             {
                 var userDeck = cardDao.GetUserDeck(username);
-                if (userDeck.All((card) => card.Id.Equals(cardId)))
+                if (userDeck.All((card) => card.Id.Equals(otherCardId)))
                     throw new CardNotOwnedOrRequirementsNotMetException();
             }
             else
                 throw new CardNotOwnedOrRequirementsNotMetException();
 
-            using (var cmd = new NpgsqlCommand("SELECT * FROM tradings where id=@id", connection))
+            using (var cmd = new NpgsqlCommand("UPDATE user_account SET stack = array_remove(stack, @otherCardId) WHERE username = @otherusername;", connection))
             {
-                cmd.Parameters.AddWithValue("id", otherCardId);
-                // Execute the update statement
-                using var reader = cmd.ExecuteReader();
-                if (reader.Read())
-                    otherUsername = reader["username"].ToString();
-            }
-
-            if (otherUsername == null)
-                return false;
-
-            //TODO: Check if Trade meets requirements 
-            //if not throw new CardNotOwnedOrRequirementsNotMetException();
-
-            using (var cmd = new NpgsqlCommand("UPDATE user_account SET stack = array_remove(stack, '@otherCardId') WHERE username = @otherusername;", connection))
-            {
-                cmd.Parameters.AddWithValue("otherCardId", otherCardId);
-                cmd.Parameters.AddWithValue("otherusername", otherUsername);
+                cmd.Parameters.AddWithValue("@otherCardId", NpgsqlTypes.NpgsqlDbType.Uuid, otherCardId);
+                cmd.Parameters.AddWithValue("@otherusername", otherUsername);
                 cmd.ExecuteNonQuery();
             }
             using (var cmd = new NpgsqlCommand("UPDATE user_account SET stack = array_append(stack, @otherCardId) WHERE username = @otherusername", connection))
             {
-                cmd.Parameters.AddWithValue("otherCardId", otherCardId);
-                cmd.Parameters.AddWithValue("otherusername", otherUsername);
+                cmd.Parameters.AddWithValue("@otherCardId", otherCardId);
+                cmd.Parameters.AddWithValue("@otherusername", otherUsername);
                 cmd.ExecuteNonQuery();
             }
 
-            using (var cmd = new NpgsqlCommand("UPDATE user_account SET stack = array_remove(stack, '@cardId') WHERE username = @username;", connection))
+            using (var cmd = new NpgsqlCommand("UPDATE user_account SET stack = array_remove(stack, @cardId) WHERE username = @username;", connection))
             {
-                cmd.Parameters.AddWithValue("cardId", cardId);
-                cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("@cardId", NpgsqlTypes.NpgsqlDbType.Uuid, tradingdeal.CardToTrade);
+                cmd.Parameters.AddWithValue("@username", username);
                 cmd.ExecuteNonQuery();
             }
             using (var cmd = new NpgsqlCommand("UPDATE user_account SET stack = array_append(stack, @cardId) WHERE username = @username", connection))
             {
-                cmd.Parameters.AddWithValue("cardId", cardId);
-                cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("@cardId", tradingdeal.CardToTrade);
+                cmd.Parameters.AddWithValue("@username", username);
                 cmd.ExecuteNonQuery();
             }
 
-            using (var cmd = new NpgsqlCommand("DELETE FROM tradings WHERE username = '@username' AND card_id = '@card_id'", connection))
+            using (var cmd = new NpgsqlCommand("DELETE FROM tradings WHERE username = @username AND cardid = @cardid", connection))
             {
-                cmd.Parameters.AddWithValue("username", username);
-                cmd.Parameters.AddWithValue("cardId", cardId);
+                cmd.Parameters.AddWithValue("@username", username);
+                cmd.Parameters.AddWithValue("@cardid", NpgsqlTypes.NpgsqlDbType.Uuid, otherCardId);
                 cmd.ExecuteNonQuery();
             }
-            using (var cmd = new NpgsqlCommand("DELETE FROM tradings WHERE username = '@otherusername' AND card_id = '@othercard_id'", connection))
+            using (var cmd = new NpgsqlCommand("DELETE FROM tradings WHERE username = @otherusername AND cardid = @othercardid", connection))
             {
-                cmd.Parameters.AddWithValue("otherusername", otherUsername);
-                cmd.Parameters.AddWithValue("othercard_id", otherCardId);
+                cmd.Parameters.AddWithValue("@otherusername", otherUsername);
+                cmd.Parameters.AddWithValue("@othercardid", NpgsqlTypes.NpgsqlDbType.Uuid, tradingdeal.CardToTrade);
                 cmd.ExecuteNonQuery();
             }
             return true;
+
         }
     }
 }

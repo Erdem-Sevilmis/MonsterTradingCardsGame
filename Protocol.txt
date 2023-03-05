@@ -1,0 +1,68 @@
+Name: Erdem Sevilmis	LV: BIF-DUA-3-WS2022-SWEN1	Datum 05.03.2023
+
+Describe design:
+Das DAO-Pattern ist ein bewährtes design pattern, das in der Softwareentwicklung häufig eingesetzt wird. 
+Es bietet eine Möglichkeit, um die Anwendungslogik von der Datenbank zu trennen und vereinfacht dadurch 
+die Handhabung von Daten und Datenbanken in einem Projekt.
+Indem das DAO-Pattern angewendet wird, wird eine Abstraktionsschicht zwischen dem Anwendungscode und 
+der Datenbank erstellt. Das bedeutet, dass die business logic der Anwendung von der Datenbank getrennt 
+ist und somit Änderungen an der Datenbank ohne großen Einfluss auf den Anwendungscode durchgeführt werden 
+können. Dies ermöglicht eine bessere Wartbarkeit und Flexibilität der Anwendung, was besonders bei komplexen
+Projekten von Vorteil ist.
+Das DAO-Pattern bietet auch eine vereinfachte Schnittstelle für die Interaktion der Anwendung mit der Datenbank. 
+Dadurch können Entwickler einfacher auf die Daten zugreifen und sie manipulieren, ohne sich um die spezifischen 
+Details der Datenbank kümmern zu müssen. Das bedeutet, dass Entwickler sich auf die Implementierung der Geschäftslogik 
+konzentrieren können, anstatt Zeit damit zu verschwenden, sich mit den Details der Datenbank auseinandersetzen zu müssen.
+Zusätzlich verbessert das DAO-Pattern die Testbarkeit der Anwendung. Durch die Trennung der Datenbank von der Geschäftslogik 
+wird es einfacher, automatisierte Tests durchzuführen und Fehler in der Anwendung zu finden. Es vereinfacht auch die 
+Implementierung von Mock-Objekten, die für Integrationstests verwendet werden können.
+
+
+Describe lessons learned
+
+
+
+Describe unit testing decisions
+Die Tests verwenden Mock-Objekte, um den getesteten Code zu isolieren und sicherzustellen, dass die Tests wiederholbar und 
+deterministisch sind. Die Tests decken sowohl Erfolgs- als auch Fehlerfälle ab und überprüfen erwartete Antworten und Fehlerbehandlung. 
+Die Tests nutzen auch das NUnit-Testframework und seine integrierten Assertions, um das Schreiben und Lesen der Tests zu vereinfachen. 
+Insgesamt zielen die Tests darauf ab, die Korrektheit der CardsManager-, GameManager-, UserManager-,TradingManager-,PackageManager 
+und verwandten Klassen zu überprüfen.
+
+
+Describes unique fearture
+Um einen Überraschungsfaktor einzubauen, gibt es die Chance für den Verlierer der Runde seine Karte doch zu behalten.
+Dafür müssen folgende Kriterien erfüllt werden:
+Eventtrigger: 3%
+Event win: 50/50  (Coin flip)
+
+
+Tracked time
+22.12.2022: 1,5h|Git repo & Projekt erstellt
+
+04.01.2023: 2h|Ursprüngliches projekt mit dem vorgegebenen Message Server ersetzt
+
+24.01.2023: 5h|Klassen die nicht benötigt wurden gelöscht, DatenBank eingerichtet, Dao-Pattern begonnen 
+
+25.01.2023: 4h|Einige commands im router bearbeitet und an der DB weiter gemacht
+
+26.01.2023/27.01.2023: 5,5h|Für die meisten commands im router die basics implementier und einen fatalen fehler im .gitignore gefunden. (mehr dazu in lessons learned)
+
+30.01.2023: 2h|Für die restlichen commands im router die basics implementiert
+
+15.02.2023: 4h|Für alle commands die fehlende response hinzugefügt.
+
+23.02.2023: 1h|Fehler behoben wo CardType nicht richtig parsened wurde
+
+24.02.2023: 4h|Die response von allen commands zu json geändert
+
+02.03.2023: 3h|Battle logic monster vs monster fertig, spell vs spell angefangen
+
+03.03.2023: 1h|bidirektionaler Schadenseffekt für spell angriffe
+
+04.03.2023: 2,5h|Card-/Game-/UserTests hinzugefügt 
+
+05.03.2023: 4,5h|Mehrer test hinzugefügt welche fast alle commands abdecken & protocol hinzugefügt & Battle abgeschlossen & Projekt aufgeräumt
+
+
+Link to GIT: https://github.com/Erdem-Sevilmis/MonsterTradingCardsGame

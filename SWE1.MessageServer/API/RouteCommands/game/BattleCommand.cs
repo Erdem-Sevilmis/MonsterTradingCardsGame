@@ -20,7 +20,8 @@ namespace SWE1.MessageServer.API.RouteCommands.game
         {
             var response = new Response();
             List<string> log = gameManager.GetInToBattle(user);
-            response.Payload = JsonConvert.SerializeObject(log.Select(card => card).ToArray());
+            response.Payload = String.Join(" ", log);
+            //Console.WriteLine(String.Join(" ", log));
             response.StatusCode = StatusCode.Ok;
             return response;
         }

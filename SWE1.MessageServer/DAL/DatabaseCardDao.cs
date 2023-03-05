@@ -62,11 +62,6 @@ namespace SWE1.MessageServer.DAL
                 filteredType += sb.ToString();
             }
             Enum.TryParse<DataBase.Card_Type>(filteredType, out name);
-
-            Console.WriteLine(name.ToString());
-            Console.WriteLine(reader["name"].ToString());
-            
-            //TODO: FixDATABASE cuz only "fire" is in it
             Enum.TryParse<ElementType>(reader["element"].ToString(), out ElementType element);
             return new Card(name, damage, id);
         }

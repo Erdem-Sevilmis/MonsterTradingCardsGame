@@ -166,14 +166,15 @@ namespace SWE1.MessageServer.Test
         {
             User user = new User("testusr", "testpwd", 0);
             Guid cardID = new Guid();
-            TradingDeal tradingDeal = new TradingDeal(new Guid(), new Guid(), TradingDeal.SpellMonster.spell, 0);
+            Guid tradeId = new Guid();
+            //TradingDeal tradingDeal = new TradingDeal(new Guid(), new Guid(), TradingDeal.SpellMonster.spell, 0);
             Mock<ITradingManager> tradingManagerMock = new Mock<ITradingManager>();
-            CarryOutTradeCommand rc = new CarryOutTradeCommand(user, tradingManagerMock.Object, cardID,tradingDeal);
+            CarryOutTradeCommand rc = new CarryOutTradeCommand(user, tradingManagerMock.Object, cardID, tradeId);
 
-            tradingManagerMock.Setup(x => x.AcceptTradingDeal(It.IsAny<Credentials>(),It.IsAny<Guid>(), It.IsAny<TradingDeal>())).Returns(true);
+            tradingManagerMock.Setup(x => x.AcceptTradingDeal(It.IsAny<Credentials>(),It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(true);
             var response = rc.Execute();
 
-            tradingManagerMock.Verify(x => x.AcceptTradingDeal(user.Credentials, cardID, tradingDeal));
+            tradingManagerMock.Verify(x => x.AcceptTradingDeal(user.Credentials, cardID, tradeId));
             Assert.That(response.StatusCode, Is.EqualTo(StatusCode.Ok));
             Assert.That(response.Payload, Is.EqualTo(null));
         }
@@ -183,14 +184,14 @@ namespace SWE1.MessageServer.Test
         {
             User user = new User("testusr", "testpwd", 0);
             Guid cardID = new Guid();
-            TradingDeal tradingDeal = new TradingDeal(new Guid(), new Guid(), TradingDeal.SpellMonster.spell, 0);
+            Guid tradeID = new Guid();
             Mock<ITradingManager> tradingManagerMock = new Mock<ITradingManager>();
-            CarryOutTradeCommand rc = new CarryOutTradeCommand(user, tradingManagerMock.Object, cardID, tradingDeal);
+            CarryOutTradeCommand rc = new CarryOutTradeCommand(user, tradingManagerMock.Object, cardID, tradeID);
 
-            tradingManagerMock.Setup(x => x.AcceptTradingDeal(It.IsAny<Credentials>(), It.IsAny<Guid>(), It.IsAny<TradingDeal>())).Throws<CardNotOwnedOrRequirementsNotMetException>();
+            tradingManagerMock.Setup(x => x.AcceptTradingDeal(It.IsAny<Credentials>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Throws<CardNotOwnedOrRequirementsNotMetException>();
             var response = rc.Execute();
 
-            tradingManagerMock.Verify(x => x.AcceptTradingDeal(user.Credentials, cardID, tradingDeal));
+            tradingManagerMock.Verify(x => x.AcceptTradingDeal(user.Credentials, cardID, tradeID));
             Assert.That(response.StatusCode, Is.EqualTo(StatusCode.Forbidden));
             Assert.That(response.Payload, Is.EqualTo(null));
         } 
@@ -200,14 +201,14 @@ namespace SWE1.MessageServer.Test
         {
             User user = new User("testusr", "testpwd", 0);
             Guid cardID = new Guid();
-            TradingDeal tradingDeal = new TradingDeal(new Guid(), new Guid(), TradingDeal.SpellMonster.spell, 0);
+            Guid tradeID = new Guid();
             Mock<ITradingManager> tradingManagerMock = new Mock<ITradingManager>();
-            CarryOutTradeCommand rc = new CarryOutTradeCommand(user, tradingManagerMock.Object, cardID, tradingDeal);
+            CarryOutTradeCommand rc = new CarryOutTradeCommand(user, tradingManagerMock.Object, cardID, tradeID);
 
-            tradingManagerMock.Setup(x => x.AcceptTradingDeal(It.IsAny<Credentials>(), It.IsAny<Guid>(), It.IsAny<TradingDeal>())).Throws<CardNotFoundException>();
+            tradingManagerMock.Setup(x => x.AcceptTradingDeal(It.IsAny<Credentials>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Throws<CardNotFoundException>();
             var response = rc.Execute();
 
-            tradingManagerMock.Verify(x => x.AcceptTradingDeal(user.Credentials, cardID, tradingDeal));
+            tradingManagerMock.Verify(x => x.AcceptTradingDeal(user.Credentials, cardID, tradeID));
             Assert.That(response.StatusCode, Is.EqualTo(StatusCode.NotFound));
             Assert.That(response.Payload, Is.EqualTo(null));
         }
